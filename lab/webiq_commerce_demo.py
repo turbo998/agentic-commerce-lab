@@ -43981,6 +43981,82 @@ def evaluate_ecommerce_reverse_logistics_exchange_policy(
     }
 
 
+@dataclass(frozen=True)
+class EnterpriseSaasSpendManagementPolicyInput:
+    quarterly_shelfware_shadow_it_and_renewal_uplift_pool_usd: float = 420000.0
+    shadow_it_duplicate_card_swipe_or_unvetted_ai_missing_zdr_dpa: bool = False
+    inactive_60d_scim_seats_unreclaimed_or_t95d_renewal_notice_missed: bool = False
+    quote_above_p50_benchmark_missing_5pct_uplift_cap_or_orphan_seat: bool = False
+    feature_level_viewer_downgrade_and_scim_pool_reharvesting_ready: bool = False
+
+
+def evaluate_enterprise_saas_spend_management_policy(
+    policy_input: EnterpriseSaasSpendManagementPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_shelfware_shadow_it_and_renewal_uplift_pool_usd
+        ),
+    )
+    if policy_input.quote_above_p50_benchmark_missing_5pct_uplift_cap_or_orphan_seat:
+        return {
+            "status_code": 451,
+            "decision": "BENCHMARK_OVERPAY_MISSING_UPLIFT_CAP_OR_ORPHAN_SEAT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shadow_it_duplicate_card_swipe_or_unvetted_ai_missing_zdr_dpa:
+        return {
+            "status_code": 403,
+            "decision": "SHADOW_IT_DUPLICATE_SUBSCRIPTION_OR_UNVETTED_AI_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.inactive_60d_scim_seats_unreclaimed_or_t95d_renewal_notice_missed:
+        return {
+            "status_code": 422,
+            "decision": "UNRECLAIMED_60D_SHELFWARE_OR_RENEWAL_NOTICE_MISS_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.feature_level_viewer_downgrade_and_scim_pool_reharvesting_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SCIM_POOL_REHARVESTING_AND_VIEWER_DOWNGRADE_CONFIRM",
+            "mandate_token": "saas_smp_rightsizing_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SAAS_SPEND_MANAGEMENT_AND_SCIM_AUTHORIZED",
+        "mandate_token": "saas_smp_rightsizing_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -59780,6 +59856,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    enterprise_saas_spend_management_guard = {
+        "authorized_200": evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput()
+        ),
+        "shadow_it_or_unvetted_ai_403": evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                shadow_it_duplicate_card_swipe_or_unvetted_ai_missing_zdr_dpa=True
+            )
+        ),
+        "shelfware_or_notice_miss_422": evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                inactive_60d_scim_seats_unreclaimed_or_t95d_renewal_notice_missed=True
+            )
+        ),
+        "benchmark_or_uplift_cap_451": evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                quote_above_p50_benchmark_missing_5pct_uplift_cap_or_orphan_seat=True
+            )
+        ),
+        "scim_viewer_downgrade_409": evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                feature_level_viewer_downgrade_and_scim_pool_reharvesting_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60288,6 +60390,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_customs_hts_duty_drawback_guard": cross_border_customs_hts_duty_drawback_guard,
         "ecommerce_loyalty_points_liability_guard": ecommerce_loyalty_points_liability_guard,
         "ecommerce_reverse_logistics_exchange_guard": ecommerce_reverse_logistics_exchange_guard,
+        "enterprise_saas_spend_management_guard": enterprise_saas_spend_management_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -87147,6 +87250,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="revlog-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SHOP_NOW_BONUS_CREDIT_EXCHANGE_AND_BOXFREE_RETURN_CONFIRM · Mandate: reverse_logistics_exchange_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 380 (🏆 Round 380 Major Milestone · #499 · SVG #823 · Sandbox #273 · Test #1,377) Enterprise SaaS Spend Management (SMP) -->
+      <div class="finops-box" id="enterprise-saas-spend-management-sandbox" style="margin-top:12px;border-color:#a855f7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B SaaS 支出管理 (SMP)、SCIM 僵尸席位缩容与影子 IT 治理 (Zylo / Productiv / Torii / Vendr) 沙盒（🏆 第 380 轮重大里程碑）</div>
+            <div class="finops-sub">Round 380 (🏆 Round 380 Milestone · #499 · SVG #823 · Sandbox #273 · Test #1,377) · 拦截员工虚拟卡/报销单重复购买已有 EA 软件及未签 ZDR DPA 的影子 AI (HTTP 403) + 60 天闲置席位 SCIM 自动回收与 T-95d 续约死线锁 (HTTP 422) + 对标 Vendr P25-P50 底价与 &lt;=5% 涨幅封顶锁 (HTTP 451) + 功能级 Creator-&gt;Viewer 自动降配净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="saassmp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 60 天未登录僵尸席位、Creator 高配低用、部门重复刷卡与错过 60d 通知被涨价损耗池 ($)
+            <input type="number" id="saassmp-gross-input" value="420000" min="10000" step="5000" oninput="recalcEnterpriseSaasSpendManagementSandbox()" />
+          </label>
+          <label>员工虚拟卡/报销单 (MCC 5734/7372) 重复 SaaS 拦截与外部 AI 零数据保留 (ZDR DPA) 门禁
+            <select id="saassmp-shadow-select" onchange="recalcEnterpriseSaasSpendManagementSandbox()">
+              <option value="pass">拒付已有企业年框软件的个人刷卡并秒发企业 SSO 席位，强制外部 AI 签署 ZDR DPA (安全)</option>
+              <option value="block_403">各部门刷个人卡重复购买已有企业年框软件，或向未签 ZDR 的影子 AI 上传源码 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>连续 60 天零活跃席位 SCIM 自动回收与 T-95 天 (早于 60d 退订期) 续约通知死线门禁
+            <select id="saassmp-scim-select" onchange="recalcEnterpriseSaasSpendManagementSandbox()">
+              <option value="pass">提前 95 天启动席位清洗与不自动续期备案，60 天未活跃席位自动回收至缓冲池 (合规)</option>
+              <option value="block_422">带着 40% 闲置席位原样自动续约，或错过合同 60 天不续约通知死线被强绑 1 年 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>同规模企业 P25-P50 成交底价基准 (Vendr/Tropic)、&lt;=5% 续约涨幅上限与离职断权门禁
+            <select id="saassmp-bench-select" onchange="recalcEnterpriseSaasSpendManagementSandbox()">
+              <option value="pass">对标行业 P25-P50 基准底价，在 MSA 锁定 &lt;=5% 年度涨幅上限并同步注销离职账号 (合规)</option>
+              <option value="block_451">盲目接受供应商 12% 续约涨价、高于 P50 中位数签约或离职人员未吊销 OAuth 令牌 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Productiv 应用内动作级遥测 (Creator-&gt;Viewer 自动降配) + SCIM 缓冲池循环复用编排
+            <select id="saassmp-opt-select" onchange="recalcEnterpriseSaasSpendManagementSandbox()">
+              <option value="enabled" selected>启用只读用户 Creator-&gt;Viewer 自动降档 + 60d 席位池循环复用 (-41% SaaS 浪费与溢价 / HTTP 409)</option>
+              <option value="disabled">传统人工 Excel 台账与原样续费基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度僵尸席位与重复采购池</div>
+            <div class="finops-kpi-val" id="saassmp-gross-kpi">$420,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">SCIM 降配与底价锁后净成本</div>
+            <div class="finops-kpi-val" id="saassmp-net-kpi" style="color:#6ee7b7;">$247,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省席位浪费与续约溢价</div>
+            <div class="finops-kpi-val" id="saassmp-savings-kpi" style="color:#38bdf8;">$172,200</div>
+          </div>
+        </div>
+        <div id="saassmp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SCIM_POOL_REHARVESTING_AND_VIEWER_DOWNGRADE_CONFIRM · Mandate: saas_smp_rightsizing_optim_409
         </div>
       </div>
 
@@ -120404,6 +120564,79 @@ function recalcEcommerceReverseLogisticsExchangeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_REVERSE_LOGISTICS_AND_EXCHANGE_AUTHORIZED · Mandate: reverse_logistics_exchange_200';
+}}
+
+function recalcEnterpriseSaasSpendManagementSandbox() {{
+  const grossInput = document.getElementById('saassmp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '420000'));
+  const shadowGate = document.getElementById('saassmp-shadow-select').value;
+  const scimGate = document.getElementById('saassmp-scim-select').value;
+  const benchGate = document.getElementById('saassmp-bench-select').value;
+  const optMode = document.getElementById('saassmp-opt-select').value;
+
+  const grossKpi = document.getElementById('saassmp-gross-kpi');
+  const netKpi = document.getElementById('saassmp-net-kpi');
+  const savingsKpi = document.getElementById('saassmp-savings-kpi');
+  const statusKpi = document.getElementById('saassmp-status-kpi');
+  const banner = document.getElementById('saassmp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (benchGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 BENCHMARK_OVERPAY_MISSING_UPLIFT_CAP_OR_ORPHAN_SEAT_BREACH · Mandate: null';
+    return;
+  }}
+  if (shadowGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SHADOW_IT_DUPLICATE_SUBSCRIPTION_OR_UNVETTED_AI_VETO · Mandate: null';
+    return;
+  }}
+  if (scimGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNRECLAIMED_60D_SHELFWARE_OR_RENEWAL_NOTICE_MISS_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SCIM_POOL_REHARVESTING_AND_VIEWER_DOWNGRADE_CONFIRM · Mandate: saas_smp_rightsizing_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_SAAS_SPEND_MANAGEMENT_AND_SCIM_AUTHORIZED · Mandate: saas_smp_rightsizing_200';
 }}
 
 function updateStage1756Sandbox() {{

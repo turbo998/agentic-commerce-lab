@@ -34518,6 +34518,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-reverse-logistics-exchange-sandbox", html_zh)
 
+    def test_enterprise_saas_spend_management_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EnterpriseSaasSpendManagementPolicyInput,
+            evaluate_enterprise_saas_spend_management_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                quarterly_shelfware_shadow_it_and_renewal_uplift_pool_usd=420000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SAAS_SPEND_MANAGEMENT_AND_SCIM_AUTHORIZED",
+        )
+
+        shadow = evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                shadow_it_duplicate_card_swipe_or_unvetted_ai_missing_zdr_dpa=True
+            )
+        )
+        self.assertEqual(shadow["status_code"], 403)
+        self.assertEqual(
+            shadow["decision"],
+            "SHADOW_IT_DUPLICATE_SUBSCRIPTION_OR_UNVETTED_AI_VETO",
+        )
+
+        scim = evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                inactive_60d_scim_seats_unreclaimed_or_t95d_renewal_notice_missed=True
+            )
+        )
+        self.assertEqual(scim["status_code"], 422)
+        self.assertEqual(
+            scim["decision"],
+            "UNRECLAIMED_60D_SHELFWARE_OR_RENEWAL_NOTICE_MISS_BREACH",
+        )
+
+        bench = evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                quote_above_p50_benchmark_missing_5pct_uplift_cap_or_orphan_seat=True
+            )
+        )
+        self.assertEqual(bench["status_code"], 451)
+        self.assertEqual(
+            bench["decision"],
+            "BENCHMARK_OVERPAY_MISSING_UPLIFT_CAP_OR_ORPHAN_SEAT_BREACH",
+        )
+
+        optim = evaluate_enterprise_saas_spend_management_policy(
+            EnterpriseSaasSpendManagementPolicyInput(
+                quarterly_shelfware_shadow_it_and_renewal_uplift_pool_usd=420000.0,
+                feature_level_viewer_downgrade_and_scim_pool_reharvesting_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 172200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 247800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("enterprise_saas_spend_management_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-saas-spend-management-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
