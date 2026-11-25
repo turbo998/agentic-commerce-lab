@@ -36664,6 +36664,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-saas-mor-vs-sor-tax-nexus-sandbox", html_zh)
 
+    def test_b2b_rfq_bid_leveling_landed_tco_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bRfqBidLevelingLandedTcoPolicyInput,
+            evaluate_b2b_rfq_bid_leveling_landed_tco_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_b2b_rfq_bid_leveling_landed_tco_policy(
+            B2bRfqBidLevelingLandedTcoPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "b2b_rfq_bid_leveling_1410_200"
+        )
+
+        tco = evaluate_b2b_rfq_bid_leveling_landed_tco_policy(
+            B2bRfqBidLevelingLandedTcoPolicyInput(
+                bids_ranked_on_raw_headline_price_without_ddp_duty_and_wacc_norm=True
+            )
+        )
+        self.assertEqual(tco["status_code"], 403)
+        self.assertEqual(
+            tco["decision"],
+            "UNNORMALIZED_INCOTERMS_OR_WACC_HEADLINE_PRICE_RANKING_VETO",
+        )
+
+        ubo = evaluate_b2b_rfq_bid_leveling_landed_tco_policy(
+            B2bRfqBidLevelingLandedTcoPolicyInput(
+                competing_bidders_share_parent_duns_ubo_or_document_author_metadata=True
+            )
+        )
+        self.assertEqual(ubo["status_code"], 422)
+        self.assertEqual(
+            ubo["decision"],
+            "COLLUSIVE_COVER_BIDDING_SHARED_UBO_OR_METADATA_BREACH",
+        )
+
+        low = evaluate_b2b_rfq_bid_leveling_landed_tco_policy(
+            B2bRfqBidLevelingLandedTcoPolicyInput(
+                single_source_100pct_award_to_lowball_bid_or_exceeds_30pct_vendor_rev=True
+            )
+        )
+        self.assertEqual(low["status_code"], 451)
+        self.assertEqual(
+            low["decision"],
+            "PREDATORY_LOWBALL_BID_OR_SINGLE_SOURCE_CAPACITY_CONCENTRATION_BREACH",
+        )
+
+        optim = evaluate_b2b_rfq_bid_leveling_landed_tco_policy(
+            B2bRfqBidLevelingLandedTcoPolicyInput(
+                quarterly_exw_tariff_misrank_cover_bidding_and_single_source_pool_usd=490000.0,
+                ddp_wacc_tco_leveling_ubo_graph_and_70_30_split_award_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 210700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 279300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_rfq_bid_leveling_landed_tco_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-rfq-bid-leveling-landed-tco-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

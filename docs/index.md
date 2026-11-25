@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`531` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`532` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（39 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（66 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（201 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（119 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（120 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（48 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（58 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -348,7 +348,7 @@
 | 201 | **🏆 零售电商虚拟套装与自选礼盒（`Virtual Bundles & BYOB Kits`）、木桶短板子件库存实时联动（`Bottleneck BOM ATP`）、`3PL WMS` 子 SKU 拆解下发与“买一赠一/套装只退主品留赠品”反套利（`Shopify Bundles API / Simple Bundles / Pipe17 / NetSuite Kit` · 🏆 全库第 530 篇双语决策指南重大里程碑！）、同仓 `min(floor(Child_ATP/Qty))` 木桶短板实时锁库、下发 3PL/海关强制拆为物理子件并用最大余数法实现 `0` 美分尾差及部分退货扣除保留品单买正价净省 43% Agent 架构选型 FAQ** | [中文](ecommerce-virtual-bundles-bom-atp-proration-shopify-simple-bundles-bogo-return-selection-faq.md) · [English](ecommerce-virtual-bundles-bom-atp-proration-shopify-simple-bundles-bogo-return-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（119 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（120 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -473,6 +473,7 @@
 | 117 | **🏆 企业 B2B 经销商批发门户（`Wholesale Dealer Portal`）、稀缺爆款公平配额分配（`Fair-Share Allocation`）与无痕一件代发（`Blind Drop-Ship`）选型对比（`Shopify Plus B2B / OroCommerce / Salesforce B2B Commerce / BigCommerce B2B` · 🏆 第 395 轮重大里程碑！）、拦截 `MAP` 破价违约户与屏蔽未授权亚马逊 `FBA` 收货地址、硬隔离 `35% D2C` 高毛利池与按等级配额拆单预售及代发包裹零价格白标装箱单净省 41% Agent 架构选型 FAQ** | [中文](b2b-wholesale-dealer-portal-shopify-orocommerce-salesforce-map-allocation-dropship-selection-faq.md) · [English](b2b-wholesale-dealer-portal-shopify-orocommerce-salesforce-map-allocation-dropship-selection-faq.en.md) |
 | 118 | **🏆 企业 B2B 采购合同全生命周期管理（`CLM`）、供应商条款智能初审（`AI Contract Redlining`）、自动续约涨价封顶（`Evergreen CPI <= 3%`）与 `ERP` 价格主数据同步 Copilot 选型对比（`Icertis ICI / Ironclad AI / DocuSign IAM / Sirion + Agiloft` · 🏆 历史性第 850 张 SVG 架构图与第 300 个策略沙盒双重大里程碑！）、侵权/数据泄露 `2x-3x` 超级赔偿上限与续约涨幅 `<=3%` 锁、全文本 `AST Diff` 防关闭修订模式暗改并强制同步 `SAP/Coupa` 价格表及 `ZDR` 禁训大模型锁净省 43% Agent 架构选型 FAQ** | [中文](b2b-clm-contract-redlining-icertis-ironclad-docusign-evergreen-erp-sync-selection-faq.md) · [English](b2b-clm-contract-redlining-icertis-ironclad-docusign-evergreen-erp-sync-selection-faq.en.md) |
 | 119 | **🧾 企业 B2B 应付账款（`AP`）行项目三单匹配（`PO == GRN == Invoice`）、计量单位（`UoM`）换算防 12 倍错付、`2/10 Net 30` 动态现金折扣与防 `BEC` 发票篡改收款银行账号选型对比（`Coupa Pay / SAP Ariba + S/4HANA / Tipalti / Stampli + Medius`）、强制物料主数据最小基准单位（`Base EA`）折算与 `MIGO 101 GRN` 实收锁、跨渠道去零模糊去重与 `<4h` 极速早付（`36.7% APR`）及供应商银行主数据物理只读锁净省 43% Agent 架构选型 FAQ** | [中文](b2b-ap-three-way-match-coupa-ariba-tipalti-uom-dynamic-discount-bec-selection-faq.md) · [English](b2b-ap-three-way-match-coupa-ariba-tipalti-uom-dynamic-discount-bec-selection-faq.en.md) |
+| 120 | **🏆 企业 B2B 战略寻源询价（`RFQ`）标书智能对齐（`Bid Leveling`）、`Incoterms (EXW vs. DDP)` 到厂全成本（`Landed TCO`）归一、股权穿透防围标串标与双源分包（`Keelvar / Arkestro / SAP Ariba Sourcing / Coupa CSO` · 🏆 全库第 1,410 项确定性单元测试与第四域第 120 篇双重大里程碑！）、强制将 `EXW/FOB` 叠加海运费、关税与 `Net` 账期 `WACC` 折算为统一 `DDP` 到厂净现值成本、邓白氏 `DUNS/UBO` 股权穿透防关联空壳假三家陪标及 `MILP 70/30` 双源分包净省 43% Agent 架构选型 FAQ** | [中文](b2b-rfq-bid-leveling-keelvar-arkestro-ariba-landed-tco-anti-collusion-selection-faq.md) · [English](b2b-rfq-bid-leveling-keelvar-arkestro-ariba-landed-tco-anti-collusion-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（48 篇）
