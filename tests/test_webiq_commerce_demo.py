@@ -34853,6 +34853,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-checkout-fraud-guarantee-sandbox", html_zh)
 
+    def test_social_livestream_commerce_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SocialLivestreamCommercePolicyInput,
+            evaluate_social_livestream_commerce_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                quarterly_sample_ghosting_oversell_penalty_and_comm_bleed_pool_usd=440000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SOCIAL_LIVESTREAM_COMMERCE_AUTHORIZED",
+        )
+
+        sample = evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                low_fulfillment_creator_sent_free_sample_or_commission_paid_pre_rma=True
+            )
+        )
+        self.assertEqual(sample["status_code"], 403)
+        self.assertEqual(
+            sample["decision"],
+            "SAMPLE_SEEDING_GHOST_OR_PRE_RMA_COMMISSION_PAYOUT_VETO",
+        )
+
+        stock = evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                unringfenced_livestream_stock_oversold_or_stacked_comm_margin_breach=True
+            )
+        )
+        self.assertEqual(stock["status_code"], 422)
+        self.assertEqual(
+            stock["decision"],
+            "LIVESTREAM_OVERSELL_SLA_OR_STACKED_COMMISSION_MARGIN_BREACH",
+        )
+
+        asr = evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                unpaid_cart_hoarding_stock_or_livestream_medical_ftc_claim_violation=True
+            )
+        )
+        self.assertEqual(asr["status_code"], 451)
+        self.assertEqual(
+            asr["decision"],
+            "UNPAID_CART_INVENTORY_HOARDING_OR_FTC_MEDICAL_CLAIM_BREACH",
+        )
+
+        optim = evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                quarterly_sample_ghosting_oversell_penalty_and_comm_bleed_pool_usd=440000.0,
+                ringfenced_flash_bucket_and_pod_14d_commission_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 184800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 255200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("social_livestream_commerce_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("social-livestream-commerce-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

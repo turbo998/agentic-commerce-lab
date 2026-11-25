@@ -44361,6 +44361,82 @@ def evaluate_ecommerce_checkout_fraud_guarantee_policy(
     }
 
 
+@dataclass(frozen=True)
+class SocialLivestreamCommercePolicyInput:
+    quarterly_sample_ghosting_oversell_penalty_and_comm_bleed_pool_usd: float = 440000.0
+    low_fulfillment_creator_sent_free_sample_or_commission_paid_pre_rma: bool = False
+    unringfenced_livestream_stock_oversold_or_stacked_comm_margin_breach: bool = False
+    unpaid_cart_hoarding_stock_or_livestream_medical_ftc_claim_violation: bool = False
+    ringfenced_flash_bucket_and_pod_14d_commission_escrow_ready: bool = False
+
+
+def evaluate_social_livestream_commerce_policy(
+    policy_input: SocialLivestreamCommercePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_sample_ghosting_oversell_penalty_and_comm_bleed_pool_usd
+        ),
+    )
+    if policy_input.unpaid_cart_hoarding_stock_or_livestream_medical_ftc_claim_violation:
+        return {
+            "status_code": 451,
+            "decision": "UNPAID_CART_INVENTORY_HOARDING_OR_FTC_MEDICAL_CLAIM_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.low_fulfillment_creator_sent_free_sample_or_commission_paid_pre_rma:
+        return {
+            "status_code": 403,
+            "decision": "SAMPLE_SEEDING_GHOST_OR_PRE_RMA_COMMISSION_PAYOUT_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unringfenced_livestream_stock_oversold_or_stacked_comm_margin_breach:
+        return {
+            "status_code": 422,
+            "decision": "LIVESTREAM_OVERSELL_SLA_OR_STACKED_COMMISSION_MARGIN_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ringfenced_flash_bucket_and_pod_14d_commission_escrow_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "RINGFENCED_FLASH_STOCK_AND_POD_14D_COMMISSION_ESCROW_CONFIRM",
+            "mandate_token": "social_livestream_commerce_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SOCIAL_LIVESTREAM_COMMERCE_AUTHORIZED",
+        "mandate_token": "social_livestream_commerce_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -60290,6 +60366,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    social_livestream_commerce_guard = {
+        "authorized_200": evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput()
+        ),
+        "sample_ghost_or_pre_rma_comm_403": evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                low_fulfillment_creator_sent_free_sample_or_commission_paid_pre_rma=True
+            )
+        ),
+        "oversell_sla_or_margin_breach_422": evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                unringfenced_livestream_stock_oversold_or_stacked_comm_margin_breach=True
+            )
+        ),
+        "cart_hoard_or_ftc_claim_451": evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                unpaid_cart_hoarding_stock_or_livestream_medical_ftc_claim_violation=True
+            )
+        ),
+        "ringfenced_flash_escrow_409": evaluate_social_livestream_commerce_policy(
+            SocialLivestreamCommercePolicyInput(
+                ringfenced_flash_bucket_and_pod_14d_commission_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60803,6 +60905,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corporate_travel_utc_multimodal_guard": corporate_travel_utc_multimodal_guard,
         "b2b_tail_spend_autonomous_sourcing_guard": b2b_tail_spend_autonomous_sourcing_guard,
         "ecommerce_checkout_fraud_guarantee_guard": ecommerce_checkout_fraud_guarantee_guard,
+        "social_livestream_commerce_guard": social_livestream_commerce_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -87947,6 +88050,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="chkfrd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SELECTIVE_TWO_TIER_GUARANTEE_RESCUE_AND_CARRIER_LOCK_CONFIRM · Mandate: checkout_fraud_guarantee_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 385 (🏆 Round 385 Major Milestone! · #504 · SVG #828 · Sandbox #278 · Test #1,382) Social & Livestream Commerce -->
+      <div class="finops-box" id="social-livestream-commerce-sandbox" style="margin-top:12px;border-color:#ec4899;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 社交与直播电商、达人免费寄样防白嫖与秒杀库存隔离/佣金倒扣 (TikTok Shop / YouTube+Shopify / Whatnot / Amazon Live) 沙盒（🏆 第 385 轮里程碑！）</div>
+            <div class="finops-sub">Round 385 (🏆 Round 385 Milestone · #504 · SVG #828 · Sandbox #278 · Test #1,382) · 达人历史挂车履约率 (&gt;=85%) 寄样锁与签收满 14 天退货期才解冻佣金防套现 (HTTP 403) + Redis 直播独立库存桶防 48h 超卖扣分与闪购叠加佣金净毛利底线 (&gt;=15%) 锁 (HTTP 422) + 付款减库存防恶意占库与主播实时 ASR 违禁词熔断 (HTTP 451) + 押金寄样与独立池净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="soclive-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度僵尸达人白嫖高价免费样品失联、直播爆单超卖平台罚金与闪购叠加高佣穿仓损耗池 ($)
+            <input type="number" id="soclive-gross-input" value="440000" min="10000" step="5000" oninput="recalcSocialLivestreamCommerceSandbox()" />
+          </label>
+          <label>达人免费申样履约率门禁 (&gt;=85% 挂车率 + 收货地址去重) 与退货期满 (POD+14d) 佣金托管锁
+            <select id="soclive-sample-select" onchange="recalcSocialLivestreamCommerceSandbox()">
+              <option value="pass">核验达人历史 14d 挂车履约率 &gt;=85% (新号转出单退押金)，且佣金冻结至过退货期 (安全)</option>
+              <option value="block_403">向买粉僵尸号白寄 $80 免费样品遭闲鱼倒卖失联，或买家未过退货期即向达人放款被刷单套佣 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>直播间 Redis 独立库存桶隔离 (防 TikTok 48h 延迟发货罚分) 与闪购叠加佣金净毛利底线门禁
+            <select id="soclive-stock-select" onchange="recalcSocialLivestreamCommerceSandbox()">
+              <option value="pass">物理隔离直播秒杀配额桶 (90% 水位自动切预售)，且确保扣佣后净毛利率 &gt;= 15% (合规)</option>
+              <option value="block_422">短视频爆单击穿 15m 轮询共享库存致超卖受罚，或 7 折闪购叠加 25% 公开佣金倒贴卖货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>付款成功扣库存 (Pay-to-Deduct 防同行恶意占库) 与主播实时语音 ASR (FTC/FDA) 合规审查门禁
+            <select id="soclive-asr-select" onchange="recalcSocialLivestreamCommerceSandbox()">
+              <option value="pass">采用付款减库存 (&lt;=180s 锁)，且通过 &lt;2s 实时 ASR 拦截违规医疗功效词与漏标 #Ad (合规)</option>
+              <option value="block_451">拍下锁库存 30m 被同行脚本瞬间拍空不付款，或主播口播“根治疾病”遭平台封店罚款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>中小达人出单退押金寄样 + Redis 直播专属令牌桶 + POD+14d 净结佣全链路编排
+            <select id="soclive-opt-select" onchange="recalcSocialLivestreamCommerceSandbox()">
+              <option value="enabled" selected>启用履约分/押金寄样 + 独立库存桶 90% 切预售 + 退货倒扣佣金 (-42% 样品与超卖损耗 / HTTP 409)</option>
+              <option value="disabled">传统按粉丝数盲寄样与全渠道共享库存基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度样品白嫖与超卖穿仓池</div>
+            <div class="finops-kpi-val" id="soclive-gross-kpi">$440,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">履约锁与独立库存桶净成本</div>
+            <div class="finops-kpi-val" id="soclive-net-kpi" style="color:#6ee7b7;">$255,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省样品浪费与超卖罚金</div>
+            <div class="finops-kpi-val" id="soclive-savings-kpi" style="color:#38bdf8;">$184,800</div>
+          </div>
+        </div>
+        <div id="soclive-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 RINGFENCED_FLASH_STOCK_AND_POD_14D_COMMISSION_ESCROW_CONFIRM · Mandate: social_livestream_commerce_optim_409
         </div>
       </div>
 
@@ -121569,6 +121729,79 @@ function recalcEcommerceCheckoutFraudGuaranteeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CHECKOUT_FRAUD_AND_GUARANTEE_AUTHORIZED · Mandate: checkout_fraud_guarantee_200';
+}}
+
+function recalcSocialLivestreamCommerceSandbox() {{
+  const grossInput = document.getElementById('soclive-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '440000'));
+  const sampleGate = document.getElementById('soclive-sample-select').value;
+  const stockGate = document.getElementById('soclive-stock-select').value;
+  const asrGate = document.getElementById('soclive-asr-select').value;
+  const optMode = document.getElementById('soclive-opt-select').value;
+
+  const grossKpi = document.getElementById('soclive-gross-kpi');
+  const netKpi = document.getElementById('soclive-net-kpi');
+  const savingsKpi = document.getElementById('soclive-savings-kpi');
+  const statusKpi = document.getElementById('soclive-status-kpi');
+  const banner = document.getElementById('soclive-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (asrGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNPAID_CART_INVENTORY_HOARDING_OR_FTC_MEDICAL_CLAIM_BREACH · Mandate: null';
+    return;
+  }}
+  if (sampleGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SAMPLE_SEEDING_GHOST_OR_PRE_RMA_COMMISSION_PAYOUT_VETO · Mandate: null';
+    return;
+  }}
+  if (stockGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LIVESTREAM_OVERSELL_SLA_OR_STACKED_COMMISSION_MARGIN_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 RINGFENCED_FLASH_STOCK_AND_POD_14D_COMMISSION_ESCROW_CONFIRM · Mandate: social_livestream_commerce_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_SOCIAL_LIVESTREAM_COMMERCE_AUTHORIZED · Mandate: social_livestream_commerce_200';
 }}
 
 function updateStage1756Sandbox() {{

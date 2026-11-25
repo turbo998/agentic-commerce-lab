@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`503` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`504` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (38 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (62 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (187 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (188 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (113 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (46 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
@@ -134,7 +134,7 @@
 | 62 | **🛡️ E-Commerce Checkout Fraud Prevention, False-Decline Rescue (`Insult Rate`) & 100% Chargeback Guarantee Agent (`Signifyd / Forter / Riskified / Stripe Radar + Adyen RevenueProtect`), Anti-Triangulation Graph Locks, Carrier `Direct-Delivery-Only` Reroute Veto, WMS `7-Day` Guarantee-Token Locks & Selective Two-Tier Underwriting (`-42%` Cost) FAQ** | [English](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.en.md) · [中文](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (187 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (188 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -327,6 +327,7 @@
 | 185 | **🏆 E-Commerce & OTA Customer Loyalty, Return Points Clawback & `ASC 606` Deferred Liability (`Breakage`) Agent (`Antavo / Talon.One / Yotpo / Salesforce Loyalty` · 🏆 1,375th Unit Test Major Milestone), `Pending-Points` Escrow Locks, Redemption Margin Floors & Actuarial Breakage Accounting (`-41%` Cost) FAQ** | [English](ecommerce-loyalty-points-liability-antavo-talon-one-yotpo-return-clawback-asc606-breakage-selection-faq.en.md) · [中文](ecommerce-loyalty-points-liability-antavo-talon-one-yotpo-return-clawback-asc606-breakage-selection-faq.md) |
 | 186 | **📦 Retail E-Commerce Reverse Logistics, Instant Exchange (`Shop Now Bonus Credit`) & Return-Fraud (`FTID / Wardrobing`) Agent (`Loop Returns / Narvar / Happy Returns / AfterShip Returns`), Carrier Hub Weight & Card Pre-Auth Locks, Security-Tag/`IMEI` Verification & Box-Free Return Bar Consolidation (`-43%` Cost) FAQ** | [English](ecommerce-reverse-logistics-returns-exchange-loop-narvar-happy-returns-ftid-fraud-selection-faq.en.md) · [中文](ecommerce-reverse-logistics-returns-exchange-loop-narvar-happy-returns-ftid-fraud-selection-faq.md) |
 | 187 | **🏆 Corporate Travel (`TMC / OTA`), Unused Ticket Credit (`UTC / eCredit`) Recycling & Multi-Modal Total Trip Cost (`Basic Economy Ancillary Trap`) Agent (`Navan / SAP Concur Travel / TravelPerk / Amex GBT Egencia` · 🏆 825th SVG & 275th Sandbox Dual Milestone!), Mandatory `UTC` First-Use & Ex-Employee Waiver Pooling, Normalized Door-to-Door `TCO` Gates & `<3h` `Scope 3` Rail Locks (`-41%` Cost) FAQ** | [English](ota-corporate-travel-unused-ticket-credit-navan-concur-travelperk-egencia-ancillary-tco-selection-faq.en.md) · [中文](ota-corporate-travel-unused-ticket-credit-navan-concur-travelperk-egencia-ancillary-tco-selection-faq.md) |
+| 188 | **🏆 Social & Livestream Commerce, Creator Sample-Seeding Guard & Flash-Drop Inventory / Commission Clawback Agent (`TikTok Shop / YouTube Shopping + Shopify / Whatnot / Amazon Live` · 🏆 Round 385 Major Milestone!), `>=85%` Sample Post-Rate Gating, `POD + 14d` Commission Escrow, Redis Ring-Fenced `48h SLA` Stock & Live `ASR` Claim Locks (`-42%` Cost) FAQ** | [English](social-livestream-commerce-tiktok-shop-shopify-collective-whatnot-sample-seeding-clawback-selection-faq.en.md) · [中文](social-livestream-commerce-tiktok-shop-shopify-collective-whatnot-sample-seeding-clawback-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (113 Guides)
