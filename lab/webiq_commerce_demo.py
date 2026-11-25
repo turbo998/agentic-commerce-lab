@@ -46825,6 +46825,82 @@ def evaluate_commercial_search_grounding_five_engine_policy(
     }
 
 
+@dataclass(frozen=True)
+class CommercialAgentBuildPathFourPlatformPolicyInput:
+    quarterly_message_pack_burn_partial_write_and_rls_leak_pool_usd: float = 480000.0
+    crm_erp_queried_via_shared_admin_secret_without_entra_obo_token: bool = False
+    multi_system_financial_write_in_stateless_flow_without_durable_saga: bool = False
+    public_anonymous_traffic_routed_to_paid_message_pack_without_slm: bool = False
+    front_store_copilot_studio_and_back_factory_foundry_saga_ready: bool = False
+
+
+def evaluate_commercial_agent_build_path_four_platform_policy(
+    policy_input: CommercialAgentBuildPathFourPlatformPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_message_pack_burn_partial_write_and_rls_leak_pool_usd
+        ),
+    )
+    if policy_input.public_anonymous_traffic_routed_to_paid_message_pack_without_slm:
+        return {
+            "status_code": 451,
+            "decision": "UNFILTERED_PUBLIC_ANONYMOUS_TRAFFIC_MESSAGE_PACK_BURN_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.crm_erp_queried_via_shared_admin_secret_without_entra_obo_token:
+        return {
+            "status_code": 403,
+            "decision": "SHARED_ADMIN_SERVICE_PRINCIPAL_RLS_BYPASS_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_system_financial_write_in_stateless_flow_without_durable_saga:
+        return {
+            "status_code": 422,
+            "decision": "UNCOMPENSATED_LOW_CODE_MULTI_SYSTEM_PARTIAL_WRITE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.front_store_copilot_studio_and_back_factory_foundry_saga_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FRONT_STORE_COPILOT_STUDIO_AND_BACK_FACTORY_FOUNDRY_SAGA_CONFIRM",
+            "mandate_token": "agent_build_path_310th_sandbox_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_COMMERCIAL_AGENT_BUILD_PATH_AUTHORIZED",
+        "mandate_token": "agent_build_path_310th_sandbox_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -63586,6 +63662,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    commercial_agent_build_path_four_platform_guard = {
+        "authorized_200": evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput()
+        ),
+        "shared_admin_rls_bypass_403": evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput(
+                crm_erp_queried_via_shared_admin_secret_without_entra_obo_token=True
+            )
+        ),
+        "uncompensated_partial_write_422": evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput(
+                multi_system_financial_write_in_stateless_flow_without_durable_saga=True
+            )
+        ),
+        "public_message_pack_burn_451": evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput(
+                public_anonymous_traffic_routed_to_paid_message_pack_without_slm=True
+            )
+        ),
+        "front_store_back_factory_409": evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput(
+                front_store_copilot_studio_and_back_factory_foundry_saga_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -64131,6 +64233,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_flash_drop_waiting_room_lottery_guard": ecommerce_flash_drop_waiting_room_lottery_guard,
         "agent_payment_rails_five_way_comparison_guard": agent_payment_rails_five_way_comparison_guard,
         "commercial_search_grounding_five_engine_guard": commercial_search_grounding_five_engine_guard,
+        "commercial_agent_build_path_four_platform_guard": commercial_agent_build_path_four_platform_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -91257,6 +91360,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="gnd5e-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 FIVE_ENGINE_85_15_PASSAGE_BROWSE_FUNNEL_AND_DOM_SANITIZER_CONFIRM · Mandate: commercial_grounding_5engine_535th_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="commercial-agent-build-path-four-platform-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 商业 Agent 构建路径深度选型 (Copilot Studio + D365 vs. Azure AI Foundry + LangGraph vs. Agentforce vs. Shopify) 沙盒（🏆 第 860 张 SVG 与第 310 个策略沙盒双里程碑！）</div>
+            <div class="finops-sub">Round 417 (#536 · 🏆 860th SVG &amp; 310th Sandbox Dual Milestone! · Test #1,414) · 强制透传用户 Entra ID OBO 令牌执行 D365/SAP 原生行级隔离 RLS 防共享管理员密钥越权查底价 (HTTP 403) + 跨系统资金/库存写操作经 MCP 卸载至 Foundry LangGraph 持久化补偿 Saga 防扣钱漏建单 (HTTP 422) + 公网匿名流量前置 Foundry SLM+语义缓存防烧穿按次对话包 (HTTP 451) + 净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="bld4p-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度公网百万级匿名闲聊直烧按次企业对话包、无状态低代码流跨系统超时扣款漏建单及共享密钥越权池 ($)
+            <input type="number" id="bld4p-gross-input" value="480000" min="10000" step="5000" oninput="recalcCommercialAgentBuildPathFourPlatformSandbox()" />
+          </label>
+          <label>Microsoft Entra ID On-Behalf-Of (OBO) 用户身份透传与行级权限 (RLS) 门禁
+            <select id="bld4p-obo-select" onchange="recalcCommercialAgentBuildPathFourPlatformSandbox()">
+              <option value="pass">全链路透传登录用户 Entra OBO JWT 令牌，严格遵循 D365/Salesforce/SAP 原生行级安全 (安全)</option>
+              <option value="block_403">连接器硬编码系统管理员 Service Principal，导致经销商 A 问出竞争对手 B 的保密协议价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>跨异构系统金融/库存写事务卸载至 Foundry + LangGraph 持久化补偿 Saga 门禁
+            <select id="bld4p-saga-select" onchange="recalcCommercialAgentBuildPathFourPlatformSandbox()">
+              <option value="pass">前店负责交互，多步写操作经 MCP 交由后厂 LangGraph Saga 执行先回读再重试与 0420 冲正 (安全)</option>
+              <option value="block_422">在无状态线性低代码流里直接串接“扣信用卡-&gt;建SAP单”，SAP 504 超时导致扣了钱却没建单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>公网匿名流量前置 Foundry SLM ($0.15/1M) + 语义缓存防烧穿按次消息包门禁
+            <select id="bld4p-slm-select" onchange="recalcCommercialAgentBuildPathFourPlatformSandbox()">
+              <option value="pass">公网未登录问答由 Phi-4/Mini SLM 与语义缓存吸收 88% 流量，认证交易才调企业连接器 (合规)</option>
+              <option value="block_451">将 $2/次会话的企业低代码消息包直接挂在公网商城首页陪 200 万匿名游客闲聊烧穿预算 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>前店 (Copilot Studio / Sidekick / Agentforce) + 后厂 (Azure AI Foundry + SK / LangGraph) 混合编排
+            <select id="bld4p-opt-select" onchange="recalcCommercialAgentBuildPathFourPlatformSandbox()">
+              <option value="enabled" selected>启用“前店后厂”混合架构 + Entra OBO + SLM 前置分流 (-43% 许可与孤儿单损耗 / HTTP 409)</option>
+              <option value="disabled">默认单一平台全量一刀切基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消息包滥用与跨系统孤儿单池</div>
+            <div class="finops-kpi-val" id="bld4p-gross-kpi">$480,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净平台与运维成本</div>
+            <div class="finops-kpi-val" id="bld4p-net-kpi">$273,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省许可费与研发赔付</div>
+            <div class="finops-kpi-val" id="bld4p-savings-kpi" style="color:#6ee7b7;">$206,400</div>
+          </div>
+        </div>
+        <div id="bld4p-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 FRONT_STORE_COPILOT_STUDIO_AND_BACK_FACTORY_FOUNDRY_SAGA_CONFIRM · Mandate: agent_build_path_310th_sandbox_optim_409
         </div>
       </div>
 
@@ -126045,6 +126204,79 @@ function recalcCommercialSearchGroundingFiveEngineSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_SEARCH_GROUNDING_FIVE_ENGINE_AUTHORIZED · Mandate: commercial_grounding_5engine_535th_200';
+}}
+
+function recalcCommercialAgentBuildPathFourPlatformSandbox() {{
+  const grossInput = document.getElementById('bld4p-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '480000'));
+  const oboGate = document.getElementById('bld4p-obo-select').value;
+  const sagaGate = document.getElementById('bld4p-saga-select').value;
+  const slmGate = document.getElementById('bld4p-slm-select').value;
+  const optMode = document.getElementById('bld4p-opt-select').value;
+
+  const grossKpi = document.getElementById('bld4p-gross-kpi');
+  const netKpi = document.getElementById('bld4p-net-kpi');
+  const savingsKpi = document.getElementById('bld4p-savings-kpi');
+  const statusKpi = document.getElementById('bld4p-status-kpi');
+  const banner = document.getElementById('bld4p-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (slmGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNFILTERED_PUBLIC_ANONYMOUS_TRAFFIC_MESSAGE_PACK_BURN_BREACH · Mandate: null';
+    return;
+  }}
+  if (oboGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SHARED_ADMIN_SERVICE_PRINCIPAL_RLS_BYPASS_VETO · Mandate: null';
+    return;
+  }}
+  if (sagaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 UNCOMPENSATED_LOW_CODE_MULTI_SYSTEM_PARTIAL_WRITE_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 FRONT_STORE_COPILOT_STUDIO_AND_BACK_FACTORY_FOUNDRY_SAGA_CONFIRM · Mandate: agent_build_path_310th_sandbox_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_AGENT_BUILD_PATH_AUTHORIZED · Mandate: agent_build_path_310th_sandbox_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{

@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`535` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`536` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（41 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（42 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（67 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（201 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（120 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（41 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（42 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -65,6 +65,7 @@
 | 39 | **🏆 端到端商业智能体架构设计与主流平台/支付/搜索接地全景选型总纲（`End-to-End Agentic Commerce Master Blueprint`: `Web IQ / Sonar / Exa` → `Cart FSM` → `Tiered HITL & Stripe SPT / Visa VIC / Mastercard / PayPal / VCN` → `Shopify / D365 / SAP / Salesforce Saga` · 🏆 历史性第 400 轮夜间深度研究重大里程碑！）、`85/15` 双阶接地与 `checkout_hash` 锁终结 54% 买错货、零明文 `PAN` 受限令牌及跨 ERP `Read-Before-Retry + <5s 0420` 冲正净省 44% Agent 架构选型 FAQ** | [中文](e2e-agentic-commerce-master-architecture-webiq-cart-fsm-spt-vic-erp-saga-selection-faq.md) · [English](e2e-agentic-commerce-master-architecture-webiq-cart-fsm-spt-vic-erp-saga-selection-faq.en.md) |
 | 40 | **👟 零售电商限量尖货秒杀（`Flash Drops`）、边缘虚拟排队室舱壁隔离（`Edge Waiting Room Bulkhead`）、开售前公平抽签洗牌（`Pre-Drop Fair Lottery`）与防黄牛改址/虚拟卡绕限（`Queue-it / Cloudflare Waiting Room / EQL Run Fair / Shopify Plus`）、仅锁 `/drops/*` 路径保日常主站零等待并强验边缘 `HMAC` 通行证、`1人1签 T=0 Fisher-Yates` 随机洗牌与 `Redis Lua` 原子扣库及 `USPS 11位 DPBC + EMVCo PAR` 去重净省 43% Agent 架构选型 FAQ** | [中文](ecommerce-flash-drop-waiting-room-queueit-cloudflare-eql-dpbc-lottery-selection-faq.md) · [English](ecommerce-flash-drop-waiting-room-queueit-cloudflare-eql-dpbc-lottery-selection-faq.en.md) |
 | 41 | **🏆 实时商业搜索与网页接地（`Web Grounding`）五大引擎深度选型对比（`Microsoft Bing Grounding / Web IQ` vs. `Perplexity Sonar API` vs. `Tavily` vs. `Exa` vs. `Firecrawl / Browser-Use` · 🏆 全库第 535 篇双语决策指南重大里程碑！）、在商品比价/舆情洞察/研报采集场景下的实时性与成本矩阵、结账前强制 `/v3/browse` 实时 `Schema.org Offer` 与 `14位 GTIN` 验真、`85/15` 双阶漏斗削减 `7.1x` Token 及隐藏 `0px DOM` 注入剥离净省 43% Agent 架构选型 FAQ** | [中文](commercial-search-grounding-five-engine-webiq-sonar-tavily-exa-firecrawl-selection-faq.md) · [English](commercial-search-grounding-five-engine-webiq-sonar-tavily-exa-firecrawl-selection-faq.en.md) |
+| 42 | **🏆 商业 Agent 构建路径与平台深度横向选型对比（`Microsoft Copilot Studio + Dynamics 365 连接器` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce` vs. `Shopify Sidekick / Storefront MCP` · 🏆 第 860 张 SVG 与第 310 个策略沙盒双里程碑！）、强制 `Entra ID OBO` 用户身份透传与行级权限（`RLS`）隔离、跨系统金融/库存写操作经 `MCP` 卸载至 `Foundry LangGraph` 持久化补偿 `Saga` 及公网匿名流量前置 `SLM + 语义缓存` 净省 43% Agent 架构选型 FAQ** | [中文](commercial-agent-build-path-four-platform-copilot-studio-foundry-agentforce-shopify-selection-faq.md) · [English](commercial-agent-build-path-four-platform-copilot-studio-foundry-agentforce-shopify-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（67 篇）

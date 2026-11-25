@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`535` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`536` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (41 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (42 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (67 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (201 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (120 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (41 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (42 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -65,6 +65,7 @@
 | 39 | **🏆 Enterprise Agentic Commerce End-to-End Architecture & Platform/Protocol Master Selection Blueprint (`Web IQ / Sonar / Exa` → `Cart FSM` → `Tiered HITL & Stripe SPT / Visa VIC / Mastercard / PayPal / VCN` → `Shopify / D365 / SAP / Salesforce Saga` · 🏆 Historic 400th Nightly Research Round Major Milestone!), `85/15` Grounding Funnel & `checkout_hash` Locks, Zero-Raw-`PAN` Scoped Tokens & Cross-ERP `Read-Before-Retry + <5s 0420` Reversal (`-44%` Cost) FAQ** | [English](e2e-agentic-commerce-master-architecture-webiq-cart-fsm-spt-vic-erp-saga-selection-faq.en.md) · [中文](e2e-agentic-commerce-master-architecture-webiq-cart-fsm-spt-vic-erp-saga-selection-faq.md) |
 | 40 | **👟 E-Commerce Limited-Edition Flash Drops, Edge Virtual Waiting Room Bulkhead, Pre-Drop Fair Lottery & Anti-Scalper `USPS DPBC + EMVCo PAR` Agent (`Queue-it / Cloudflare Waiting Room / EQL Run Fair / Shopify Plus`), Path-Scoped `/drops/*` Bulkheads & Edge `HMAC` Passes, `1-User-1-Slot` `T=0` Shuffle + `Redis Lua` Atomic Decrements & `11-Digit DPBC + PAR` Deduplication (`-43%` Cost) FAQ** | [English](ecommerce-flash-drop-waiting-room-queueit-cloudflare-eql-dpbc-lottery-selection-faq.en.md) · [中文](ecommerce-flash-drop-waiting-room-queueit-cloudflare-eql-dpbc-lottery-selection-faq.md) |
 | 41 | **🏆 Real-Time Commercial Search & Web Grounding 5-Engine Deep-Dive Selection (`Microsoft Bing Grounding / Web IQ` vs. `Perplexity Sonar API` vs. `Tavily` vs. `Exa` vs. `Firecrawl / Browser-Use` · 🏆 535th Bilingual SA Guide Major Milestone!), Price/Sentiment/Research Workload Matrix, Pre-Checkout `liveCrawlSucceeded + 14-Digit GTIN` Locks, `85/15` Token Funnels (`7.1x` Cut) & `0px` DOM Sanitization (`-43%` Cost) FAQ** | [English](commercial-search-grounding-five-engine-webiq-sonar-tavily-exa-firecrawl-selection-faq.en.md) · [中文](commercial-search-grounding-five-engine-webiq-sonar-tavily-exa-firecrawl-selection-faq.md) |
+| 42 | **🏆 Commercial Agent Build-Path & Platform 4-Way Deep-Dive Selection (`Microsoft Copilot Studio + Dynamics 365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce` vs. `Shopify Sidekick / Storefront MCP` · 🏆 860th SVG & 310th Sandbox Dual Milestone!), `Entra ID OBO` `RLS` Propagation, Durable `LangGraph` Compensating `Saga` Offloading & "Front-Store / Back-Factory" `SLM` FinOps (`-43%` Cost) FAQ** | [English](commercial-agent-build-path-four-platform-copilot-studio-foundry-agentforce-shopify-selection-faq.en.md) · [中文](commercial-agent-build-path-four-platform-copilot-studio-foundry-agentforce-shopify-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (67 Guides)

@@ -36918,6 +36918,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-search-grounding-five-engine-sandbox", html_zh)
 
+    def test_commercial_agent_build_path_four_platform_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CommercialAgentBuildPathFourPlatformPolicyInput,
+            evaluate_commercial_agent_build_path_four_platform_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "agent_build_path_310th_sandbox_200"
+        )
+
+        obo = evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput(
+                crm_erp_queried_via_shared_admin_secret_without_entra_obo_token=True
+            )
+        )
+        self.assertEqual(obo["status_code"], 403)
+        self.assertEqual(
+            obo["decision"],
+            "SHARED_ADMIN_SERVICE_PRINCIPAL_RLS_BYPASS_VETO",
+        )
+
+        saga = evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput(
+                multi_system_financial_write_in_stateless_flow_without_durable_saga=True
+            )
+        )
+        self.assertEqual(saga["status_code"], 422)
+        self.assertEqual(
+            saga["decision"],
+            "UNCOMPENSATED_LOW_CODE_MULTI_SYSTEM_PARTIAL_WRITE_BREACH",
+        )
+
+        slm = evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput(
+                public_anonymous_traffic_routed_to_paid_message_pack_without_slm=True
+            )
+        )
+        self.assertEqual(slm["status_code"], 451)
+        self.assertEqual(
+            slm["decision"],
+            "UNFILTERED_PUBLIC_ANONYMOUS_TRAFFIC_MESSAGE_PACK_BURN_BREACH",
+        )
+
+        optim = evaluate_commercial_agent_build_path_four_platform_policy(
+            CommercialAgentBuildPathFourPlatformPolicyInput(
+                quarterly_message_pack_burn_partial_write_and_rls_leak_pool_usd=480000.0,
+                front_store_copilot_studio_and_back_factory_foundry_saga_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 206400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 273600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_agent_build_path_four_platform_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-agent-build-path-four-platform-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
