@@ -36790,6 +36790,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-flash-drop-waiting-room-lottery-sandbox", html_zh)
 
+    def test_agent_payment_rails_five_way_comparison_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgentPaymentRailsFiveWayComparisonPolicyInput,
+            evaluate_agent_payment_rails_five_way_comparison_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "agent_payment_5rail_round415_200"
+        )
+
+        part = evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput(
+                multi_seller_cart_uses_unpartitioned_token_or_child_sum_mismatches=True
+            )
+        )
+        self.assertEqual(part["status_code"], 403)
+        self.assertEqual(
+            part["decision"],
+            "UNPARTITIONED_MULTI_SELLER_PAYMENT_TOKEN_OR_SUM_DRIFT_VETO",
+        )
+
+        mit = evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput(
+                unattended_mit_missing_15digit_cit_trace_id_or_fido2_cryptogram=True
+            )
+        )
+        self.assertEqual(mit["status_code"], 422)
+        self.assertEqual(
+            mit["decision"],
+            "UNATTENDED_MIT_MISSING_CIT_TRACE_ID_OR_3DS2_DEADLOCK_BREACH",
+        )
+
+        pan = evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput(
+                raw_16digit_vcn_exposed_in_llm_prompt_or_missing_rfc9421_tap_sig=True
+            )
+        )
+        self.assertEqual(pan["status_code"], 451)
+        self.assertEqual(
+            pan["decision"],
+            "RAW_PAN_IN_LLM_CONTEXT_OR_UNSIGNED_AGENT_TAP_HEADER_BREACH",
+        )
+
+        optim = evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput(
+                quarterly_mit_3ds2_deadlock_multi_seller_drain_and_fraud_pool_usd=500000.0,
+                five_rail_spt_vic_mc_paypal_vcn_router_and_child_partition_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 215000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 285000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agent_payment_rails_five_way_comparison_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agent-payment-rails-five-way-comparison-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

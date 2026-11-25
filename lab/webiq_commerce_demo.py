@@ -46671,6 +46671,84 @@ def evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgentPaymentRailsFiveWayComparisonPolicyInput:
+    quarterly_mit_3ds2_deadlock_multi_seller_drain_and_fraud_pool_usd: float = (
+        500000.0
+    )
+    multi_seller_cart_uses_unpartitioned_token_or_child_sum_mismatches: bool = False
+    unattended_mit_missing_15digit_cit_trace_id_or_fido2_cryptogram: bool = False
+    raw_16digit_vcn_exposed_in_llm_prompt_or_missing_rfc9421_tap_sig: bool = False
+    five_rail_spt_vic_mc_paypal_vcn_router_and_child_partition_ready: bool = False
+
+
+def evaluate_agent_payment_rails_five_way_comparison_policy(
+    policy_input: AgentPaymentRailsFiveWayComparisonPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_mit_3ds2_deadlock_multi_seller_drain_and_fraud_pool_usd
+        ),
+    )
+    if policy_input.raw_16digit_vcn_exposed_in_llm_prompt_or_missing_rfc9421_tap_sig:
+        return {
+            "status_code": 451,
+            "decision": "RAW_PAN_IN_LLM_CONTEXT_OR_UNSIGNED_AGENT_TAP_HEADER_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_seller_cart_uses_unpartitioned_token_or_child_sum_mismatches:
+        return {
+            "status_code": 403,
+            "decision": "UNPARTITIONED_MULTI_SELLER_PAYMENT_TOKEN_OR_SUM_DRIFT_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unattended_mit_missing_15digit_cit_trace_id_or_fido2_cryptogram:
+        return {
+            "status_code": 422,
+            "decision": "UNATTENDED_MIT_MISSING_CIT_TRACE_ID_OR_3DS2_DEADLOCK_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.five_rail_spt_vic_mc_paypal_vcn_router_and_child_partition_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FIVE_RAIL_SPT_VIC_MC_PAYPAL_VCN_ROUTER_AND_PARTITION_CONFIRM",
+            "mandate_token": "agent_payment_5rail_round415_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_AGENT_PAYMENT_FIVE_RAIL_AUTHORIZED",
+        "mandate_token": "agent_payment_5rail_round415_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -63380,6 +63458,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agent_payment_rails_five_way_comparison_guard = {
+        "authorized_200": evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput()
+        ),
+        "unpartitioned_multi_seller_403": evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput(
+                multi_seller_cart_uses_unpartitioned_token_or_child_sum_mismatches=True
+            )
+        ),
+        "mit_missing_trace_or_3ds2_422": evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput(
+                unattended_mit_missing_15digit_cit_trace_id_or_fido2_cryptogram=True
+            )
+        ),
+        "raw_pan_prompt_or_unsigned_451": evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput(
+                raw_16digit_vcn_exposed_in_llm_prompt_or_missing_rfc9421_tap_sig=True
+            )
+        ),
+        "five_rail_waterfall_router_409": evaluate_agent_payment_rails_five_way_comparison_policy(
+            AgentPaymentRailsFiveWayComparisonPolicyInput(
+                five_rail_spt_vic_mc_paypal_vcn_router_and_child_partition_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -63923,6 +64027,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_saas_mor_vs_sor_tax_nexus_guard": cross_border_saas_mor_vs_sor_tax_nexus_guard,
         "b2b_rfq_bid_leveling_landed_tco_guard": b2b_rfq_bid_leveling_landed_tco_guard,
         "ecommerce_flash_drop_waiting_room_lottery_guard": ecommerce_flash_drop_waiting_room_lottery_guard,
+        "agent_payment_rails_five_way_comparison_guard": agent_payment_rails_five_way_comparison_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -90937,6 +91042,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fldrp-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 PATH_BULKHEAD_T0_FAIR_SHUFFLE_AND_REDIS_LUA_DPBC_CONFIRM · Mandate: flash_drop_waiting_room_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="agent-payment-rails-five-way-comparison-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 Agent 支付与结账五大协议深度选型 (Stripe SPT vs. Visa VIC vs. Mastercard vs. PayPal vs. VCN) 沙盒（🏆 第 415 轮重大里程碑！）</div>
+            <div class="finops-sub">Round 415 (#534 · SVG #858 · Sandbox #308 · Test #1,412 · 🏆 Round 415 Major Milestone!) · 跨多商户购物车强制 1店1独立子令牌拆分且总额美分守恒防单店超扣穿仓 (HTTP 403) + 凌晨无人值守 MIT 强制挂载初始 15位 CIT Trace ID 与 FIDO2 支付指令密文防 3DS2 短信死锁 (HTTP 422) + 大模型零明文 PAN 隔离与 RFC 9421 TAP 签名 (HTTP 451) + 五轨瀑布路由净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="pay5r-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度凌晨自动下单撞上 3DS2 短信死锁流单、跨商户共用令牌被单店超扣穿仓及 10.4 盗刷拒付池 ($)
+            <input type="number" id="pay5r-gross-input" value="500000" min="10000" step="5000" oninput="recalcAgentPaymentRailsFiveWayComparisonSandbox()" />
+          </label>
+          <label>跨多商户购物车 1店1独立子令牌拆分 (Per-Seller Child Token) 与美分守恒门禁
+            <select id="pay5r-part-select" onchange="recalcAgentPaymentRailsFiveWayComparisonSandbox()">
+              <option value="pass">按卖家独立签发 SPT_A($180) + VIC_B($150) + VCN_C($90)，任一失败 5s 内 0420 全退 (安全)</option>
+              <option value="block_403">3 家店共用同一张 $420 令牌，A 店多刷 $350 导致 B 店和 C 店因余额不足全线失败 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>凌晨无人值守自主下单 (Unattended MIT) 15位 CIT Trace ID 与 FIDO2 密文门禁
+            <select id="pay5r-mit-select" onchange="recalcAgentPaymentRailsFiveWayComparisonSandbox()">
+              <option value="pass">首次委托采集 FIDO2 Passkey 密文与 15位 CIT Trace ID，凌晨自动扣款免弹 3DS2 秒过 (安全)</option>
+              <option value="block_422">凌晨 3 点降价自动锁单漏传 CIT Trace ID，被发卡行弹出 3DS2 短信验证码超时死锁 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>大模型上下文零明文卡号 (TEE 飞地盲填 VCN) 与 RFC 9421 Visa TAP 请求头签名门禁
+            <select id="pay5r-pan-select" onchange="recalcAgentPaymentRailsFiveWayComparisonSandbox()">
+              <option value="pass">优先走零 PAN 的 SPT/VIC/PayPal，兜底 VCN 仅在非 LLM 飞地内盲填并附 TAP 签名 (合规)</option>
+              <option value="block_451">将 16位明文虚拟卡号塞进 LLM Prompt 违反 PCI-DSS v4.0，或无 TAP 签名被 WAF 封杀 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>五轨优先级瀑布路由 (Stripe SPT -&gt; Visa VIC / MC Agent Pay -&gt; PayPal -&gt; 飞地 VCN) 编排
+            <select id="pay5r-opt-select" onchange="recalcAgentPaymentRailsFiveWayComparisonSandbox()">
+              <option value="enabled" selected>启用五轨智能瀑布路由 + 1店1子令牌 + CIT-to-MIT 密文 (-43% 流单与拒付损耗 / HTTP 409)</option>
+              <option value="disabled">默认单一静态绑卡或共用虚拟卡基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度MIT死锁与跨店穿仓池</div>
+            <div class="finops-kpi-val" id="pay5r-gross-kpi">$500,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净通道与拒付成本</div>
+            <div class="finops-kpi-val" id="pay5r-net-kpi">$285,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回自动成交与B2B返现</div>
+            <div class="finops-kpi-val" id="pay5r-savings-kpi" style="color:#6ee7b7;">$215,000</div>
+          </div>
+        </div>
+        <div id="pay5r-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 FIVE_RAIL_SPT_VIC_MC_PAYPAL_VCN_ROUTER_AND_PARTITION_CONFIRM · Mandate: agent_payment_5rail_round415_optim_409
         </div>
       </div>
 
@@ -125579,6 +125740,79 @@ function recalcEcommerceFlashDropWaitingRoomLotterySandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_FLASH_DROP_WAITING_ROOM_AUTHORIZED · Mandate: flash_drop_waiting_room_200';
+}}
+
+function recalcAgentPaymentRailsFiveWayComparisonSandbox() {{
+  const grossInput = document.getElementById('pay5r-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '500000'));
+  const partGate = document.getElementById('pay5r-part-select').value;
+  const mitGate = document.getElementById('pay5r-mit-select').value;
+  const panGate = document.getElementById('pay5r-pan-select').value;
+  const optMode = document.getElementById('pay5r-opt-select').value;
+
+  const grossKpi = document.getElementById('pay5r-gross-kpi');
+  const netKpi = document.getElementById('pay5r-net-kpi');
+  const savingsKpi = document.getElementById('pay5r-savings-kpi');
+  const statusKpi = document.getElementById('pay5r-status-kpi');
+  const banner = document.getElementById('pay5r-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (panGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 RAW_PAN_IN_LLM_CONTEXT_OR_UNSIGNED_AGENT_TAP_HEADER_BREACH · Mandate: null';
+    return;
+  }}
+  if (partGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNPARTITIONED_MULTI_SELLER_PAYMENT_TOKEN_OR_SUM_DRIFT_VETO · Mandate: null';
+    return;
+  }}
+  if (mitGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 UNATTENDED_MIT_MISSING_CIT_TRACE_ID_OR_3DS2_DEADLOCK_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 FIVE_RAIL_SPT_VIC_MC_PAYPAL_VCN_ROUTER_AND_PARTITION_CONFIRM · Mandate: agent_payment_5rail_round415_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_AGENT_PAYMENT_FIVE_RAIL_AUTHORIZED · Mandate: agent_payment_5rail_round415_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
