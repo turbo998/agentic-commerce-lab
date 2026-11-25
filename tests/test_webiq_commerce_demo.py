@@ -36854,6 +36854,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agent-payment-rails-five-way-comparison-sandbox", html_zh)
 
+    def test_commercial_search_grounding_five_engine_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CommercialSearchGroundingFiveEnginePolicyInput,
+            evaluate_commercial_search_grounding_five_engine_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "commercial_grounding_5engine_535th_200"
+        )
+
+        live = evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput(
+                checkout_or_price_match_approved_on_cached_snippet_without_live_browse=True
+            )
+        )
+        self.assertEqual(live["status_code"], 403)
+        self.assertEqual(
+            live["decision"],
+            "STALE_SEARCH_SNIPPET_OR_ACCESSORY_GTIN_MISMATCH_VETO",
+        )
+
+        fun = evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput(
+                full_page_scrape_called_on_top20_or_affiliate_seo_farm_unfiltered=True
+            )
+        )
+        self.assertEqual(fun["status_code"], 422)
+        self.assertEqual(
+            fun["decision"],
+            "UNBOUNDED_FULL_PAGE_SCRAPE_TOKEN_BLOWOUT_OR_SEO_FARM_BREACH",
+        )
+
+        dom = evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput(
+                hidden_0px_dom_injection_unstripped_or_w3c_tdmrep_optout_violated=True
+            )
+        )
+        self.assertEqual(dom["status_code"], 451)
+        self.assertEqual(
+            dom["decision"],
+            "INDIRECT_DOM_PROMPT_INJECTION_OR_TDMREP_COPYRIGHT_BREACH",
+        )
+
+        optim = evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput(
+                quarterly_fullpage_token_burn_stale_price_and_seo_farm_pool_usd=450000.0,
+                five_engine_85_15_passage_browse_funnel_and_dom_sanitizer_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 193500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 256500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_search_grounding_five_engine_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-search-grounding-five-engine-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

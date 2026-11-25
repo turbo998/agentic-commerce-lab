@@ -46749,6 +46749,82 @@ def evaluate_agent_payment_rails_five_way_comparison_policy(
     }
 
 
+@dataclass(frozen=True)
+class CommercialSearchGroundingFiveEnginePolicyInput:
+    quarterly_fullpage_token_burn_stale_price_and_seo_farm_pool_usd: float = 450000.0
+    checkout_or_price_match_approved_on_cached_snippet_without_live_browse: bool = False
+    full_page_scrape_called_on_top20_or_affiliate_seo_farm_unfiltered: bool = False
+    hidden_0px_dom_injection_unstripped_or_w3c_tdmrep_optout_violated: bool = False
+    five_engine_85_15_passage_browse_funnel_and_dom_sanitizer_ready: bool = False
+
+
+def evaluate_commercial_search_grounding_five_engine_policy(
+    policy_input: CommercialSearchGroundingFiveEnginePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_fullpage_token_burn_stale_price_and_seo_farm_pool_usd
+        ),
+    )
+    if policy_input.hidden_0px_dom_injection_unstripped_or_w3c_tdmrep_optout_violated:
+        return {
+            "status_code": 451,
+            "decision": "INDIRECT_DOM_PROMPT_INJECTION_OR_TDMREP_COPYRIGHT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.checkout_or_price_match_approved_on_cached_snippet_without_live_browse:
+        return {
+            "status_code": 403,
+            "decision": "STALE_SEARCH_SNIPPET_OR_ACCESSORY_GTIN_MISMATCH_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.full_page_scrape_called_on_top20_or_affiliate_seo_farm_unfiltered:
+        return {
+            "status_code": 422,
+            "decision": "UNBOUNDED_FULL_PAGE_SCRAPE_TOKEN_BLOWOUT_OR_SEO_FARM_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.five_engine_85_15_passage_browse_funnel_and_dom_sanitizer_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FIVE_ENGINE_85_15_PASSAGE_BROWSE_FUNNEL_AND_DOM_SANITIZER_CONFIRM",
+            "mandate_token": "commercial_grounding_5engine_535th_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_COMMERCIAL_SEARCH_GROUNDING_FIVE_ENGINE_AUTHORIZED",
+        "mandate_token": "commercial_grounding_5engine_535th_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -63484,6 +63560,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    commercial_search_grounding_five_engine_guard = {
+        "authorized_200": evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput()
+        ),
+        "stale_snippet_or_gtin_mismatch_403": evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput(
+                checkout_or_price_match_approved_on_cached_snippet_without_live_browse=True
+            )
+        ),
+        "fullpage_top20_or_seo_farm_422": evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput(
+                full_page_scrape_called_on_top20_or_affiliate_seo_farm_unfiltered=True
+            )
+        ),
+        "hidden_dom_injection_or_tdm_451": evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput(
+                hidden_0px_dom_injection_unstripped_or_w3c_tdmrep_optout_violated=True
+            )
+        ),
+        "five_engine_85_15_funnel_409": evaluate_commercial_search_grounding_five_engine_policy(
+            CommercialSearchGroundingFiveEnginePolicyInput(
+                five_engine_85_15_passage_browse_funnel_and_dom_sanitizer_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -64028,6 +64130,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_rfq_bid_leveling_landed_tco_guard": b2b_rfq_bid_leveling_landed_tco_guard,
         "ecommerce_flash_drop_waiting_room_lottery_guard": ecommerce_flash_drop_waiting_room_lottery_guard,
         "agent_payment_rails_five_way_comparison_guard": agent_payment_rails_five_way_comparison_guard,
+        "commercial_search_grounding_five_engine_guard": commercial_search_grounding_five_engine_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -91098,6 +91201,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="pay5r-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 FIVE_RAIL_SPT_VIC_MC_PAYPAL_VCN_ROUTER_AND_PARTITION_CONFIRM · Mandate: agent_payment_5rail_round415_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="commercial-search-grounding-five-engine-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 实时商业搜索与网页接地五大引擎深度选型 (Microsoft Web IQ vs. Perplexity Sonar vs. Tavily vs. Exa vs. Firecrawl) 沙盒（🏆 全库第 535 篇双语决策指南重大里程碑！）</div>
+            <div class="finops-sub">Round 416 (#535 🏆 535th Guide Major Milestone · SVG #859 · Sandbox #309 · Test #1,413) · 结账与买贵退差前强制 /v3/browse 实时落地页核验 (liveCrawlSucceeded=True + 14位 GTIN) 终结缓存旧价与配件混淆 (HTTP 403) + 85/15 Passage-to-Browse 漏斗严禁对初筛 Top-20 全量抓整页并过滤返利内容农场 (HTTP 422) + 剥离 0px 隐藏 DOM 提示词注入与遵守 W3C TDMRep 版权 (HTTP 451) + 净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="gnd5e-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度对初筛 Top-20 无差别抓整页烧穿 7.1x Token 费、轻信搜索缓存旧价/配件价误退差价及返利软文污染池 ($)
+            <input type="number" id="gnd5e-gross-input" value="450000" min="10000" step="5000" oninput="recalcCommercialSearchGroundingFiveEngineSandbox()" />
+          </label>
+          <label>结账/价保前实时落地页核验 (liveCrawlSucceeded == True) 与 14位 GTIN 主商品门禁
+            <select id="gnd5e-live-select" onchange="recalcCommercialSearchGroundingFiveEngineSandbox()">
+              <option value="pass">Top-3 候选强制调 /v3/browse 或 Firecrawl 实时核验 Schema.org Offer 与 14位 GTIN (安全)</option>
+              <option value="block_403">轻信搜索引擎 7 天前缓存旧价或把 $39 保护壳当成 $649 整机直接锁单/批退差价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>85/15 双阶段检索漏斗 (Passage -&gt; Live Browse) 与过滤 Affiliate 返利内容农场门禁
+            <select id="gnd5e-fun-select" onchange="recalcCommercialSearchGroundingFiveEngineSandbox()">
+              <option value="pass">前 85% 走 Web IQ passage / Exa 轻量初筛省 7.1x Token，并自动剔除返利软文农场 (安全)</option>
+              <option value="block_422">对初筛 20 个网页全部启动 Firecrawl/Browser-Use 抓整页烧爆 Token，或采信返利软文站 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>商品评论区隐藏 0px CSS 间接提示词注入剥离与 W3C TDMRep (EU AI Act) 版权门禁
+            <select id="gnd5e-dom-select" onchange="recalcCommercialSearchGroundingFiveEngineSandbox()">
+              <option value="pass">DOM 树阶段物理剥离 font-size:0/opacity:0 不可见节点，并严格遵守 TDM-Reservation: 1 (合规)</option>
+              <option value="block_451">未清洗评论区白底白字隐藏指令导致 Agent 被劫持，或违规强爬声明禁止 TDM 的付费研报 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>比价走 Web IQ+Firecrawl / 舆情走 Sonar+Tavily / 研报与B2B寻源走 Exa 五引擎智能路由
+            <select id="gnd5e-opt-select" onchange="recalcCommercialSearchGroundingFiveEngineSandbox()">
+              <option value="enabled" selected>启用五引擎按场景分流 + 85/15 漏斗 + 实时 GTIN 锁 (-43% 接地 Token 与跳价损耗 / HTTP 409)</option>
+              <option value="disabled">默认单一搜索或全页爬虫一刀切基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度全页抓取与旧价误判损失池</div>
+            <div class="finops-kpi-val" id="gnd5e-gross-kpi">$450,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净接地与核验成本</div>
+            <div class="finops-kpi-val" id="gnd5e-net-kpi">$256,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省Token费与旧价赔付</div>
+            <div class="finops-kpi-val" id="gnd5e-savings-kpi" style="color:#6ee7b7;">$193,500</div>
+          </div>
+        </div>
+        <div id="gnd5e-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 FIVE_ENGINE_85_15_PASSAGE_BROWSE_FUNNEL_AND_DOM_SANITIZER_CONFIRM · Mandate: commercial_grounding_5engine_535th_optim_409
         </div>
       </div>
 
@@ -125813,6 +125972,79 @@ function recalcAgentPaymentRailsFiveWayComparisonSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_AGENT_PAYMENT_FIVE_RAIL_AUTHORIZED · Mandate: agent_payment_5rail_round415_200';
+}}
+
+function recalcCommercialSearchGroundingFiveEngineSandbox() {{
+  const grossInput = document.getElementById('gnd5e-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '450000'));
+  const liveGate = document.getElementById('gnd5e-live-select').value;
+  const funGate = document.getElementById('gnd5e-fun-select').value;
+  const domGate = document.getElementById('gnd5e-dom-select').value;
+  const optMode = document.getElementById('gnd5e-opt-select').value;
+
+  const grossKpi = document.getElementById('gnd5e-gross-kpi');
+  const netKpi = document.getElementById('gnd5e-net-kpi');
+  const savingsKpi = document.getElementById('gnd5e-savings-kpi');
+  const statusKpi = document.getElementById('gnd5e-status-kpi');
+  const banner = document.getElementById('gnd5e-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (domGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 INDIRECT_DOM_PROMPT_INJECTION_OR_TDMREP_COPYRIGHT_BREACH · Mandate: null';
+    return;
+  }}
+  if (liveGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STALE_SEARCH_SNIPPET_OR_ACCESSORY_GTIN_MISMATCH_VETO · Mandate: null';
+    return;
+  }}
+  if (funGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 UNBOUNDED_FULL_PAGE_SCRAPE_TOKEN_BLOWOUT_OR_SEO_FARM_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 FIVE_ENGINE_85_15_PASSAGE_BROWSE_FUNNEL_AND_DOM_SANITIZER_CONFIRM · Mandate: commercial_grounding_5engine_535th_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_SEARCH_GROUNDING_FIVE_ENGINE_AUTHORIZED · Mandate: commercial_grounding_5engine_535th_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
