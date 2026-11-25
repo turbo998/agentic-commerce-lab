@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`507` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`508` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (38 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (62 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (190 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (114 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (115 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (46 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -332,7 +332,7 @@
 | 190 | **🏆 Omnichannel Retail Clienteling, Endless-Aisle POS & `BORIS` Commission Attribution Copilot (`Tulip Clienteling / NewStore Omnichannel POS / Salesforce Retail Cloud / Shopify POS Pro` · 🏆 1,385th Unit Test Major Milestone!), `14-Day` Cross-Device Lookbook Locks, `75%/25%` Dual-Store Endless-Aisle Splits, `BORIS` Store-Quota Neutrality & Masked VIP Proxy Relays (`-41%` Cost) FAQ** | [English](omnichannel-clienteling-endless-aisle-tulip-newstore-salesforce-shopify-pos-boris-commission-selection-faq.en.md) · [中文](omnichannel-clienteling-endless-aisle-tulip-newstore-salesforce-shopify-pos-boris-commission-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (114 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (115 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -452,6 +452,7 @@
 | 112 | **🏆 Enterprise B2B Trade Credit Insurance, `Net 30/60/90` Checkout & Invoice Factoring Agent (`Allianz Trade / Coface / Atradius` vs. `Hokodo / Balance / Resolve` · 🏆 Round 375 Major Milestone), Insured Exposure & Past-Due `DSO` Locks, Anti-Double-Pledge Factoring Guards & Insolvency Stoppage-in-Transit (`-41%` Cost) FAQ** | [English](b2b-trade-credit-insurance-net-terms-hokodo-balance-allianz-trade-dso-hold-factoring-selection-faq.en.md) · [中文](b2b-trade-credit-insurance-net-terms-hokodo-balance-allianz-trade-dso-hold-factoring-selection-faq.md) |
 | 113 | **🏆 Enterprise B2B Tail-Spend Autonomous Sourcing, Instant 3-Bid Micro-`RFQ` & Anti-`PO-Splitting` Copilot (`Fairmarkit / Globality / Amazon Business Guided Buying / SAP Ariba Spot Buy` · 🏆 1,380th Unit Test Major Milestone!), 14-Day Rolling Split-Order Graph Locks, Single-Quote-to-3-Bid Auctions & Zero-Sprawl Tail MoR Consolidation (`-40%` Cost) FAQ** | [English](b2b-tail-spend-autonomous-sourcing-fairmarkit-globality-amazon-business-po-splitting-selection-faq.en.md) · [中文](b2b-tail-spend-autonomous-sourcing-fairmarkit-globality-amazon-business-po-splitting-selection-faq.md) |
 | 114 | **🏆 Enterprise B2B Vendor-Managed Inventory (`VMI`), Consignment `411K ERS` Self-Billing & `EDI 852 / 846` Anti-Bullwhip Replenishment Copilot (`SAP IBP + Ariba SCC / Blue Yonder Luminate / Coupa Supply Chain / Dynamics 365 SCM` · 🏆 505th Bilingual SA Guide Milestone!), Anti-Channel-Stuffing `Max_Stock` ASN Locks, POS Promo De-Trending, `>=85%` Pallet Cube Rounding & Shrinkage Auto-Settlement (`-41%` Cost) FAQ** | [English](b2b-vmi-consignment-inventory-replenishment-sap-ibp-blue-yonder-coupa-d365-edi852-bullwhip-selection-faq.en.md) · [中文](b2b-vmi-consignment-inventory-replenishment-sap-ibp-blue-yonder-coupa-d365-edi852-bullwhip-selection-faq.md) |
+| 115 | **💵 Enterprise B2B Accounts Receivable (`AR`), AI Cash Application, Retailer Deduction Dispute (`EDI 812`) & Dynamic Credit-Hold Release Copilot (`HighRadius / Billtrust / Versapay / Tesorio`), Unearned `2/10` Discount Veto & Auto-Debit-Memos, Automated `BOL/POD` Shortage Dispute Bundlers & `<5m` Intraday Credit Release (`-41%` Cost) FAQ** | [English](b2b-ar-cash-application-deduction-dispute-highradius-billtrust-versapay-tesorio-credit-hold-selection-faq.en.md) · [中文](b2b-ar-cash-application-deduction-dispute-highradius-billtrust-versapay-tesorio-credit-hold-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (46 Guides)

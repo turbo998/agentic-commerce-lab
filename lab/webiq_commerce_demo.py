@@ -44665,6 +44665,82 @@ def evaluate_retail_clienteling_pos_boris_attribution_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bArCashApplicationDeductionPolicyInput:
+    quarterly_false_shortage_deduction_unearned_discount_and_hold_pool_usd: float = 460000.0
+    unearned_early_pay_discount_taken_past_window_or_unauthorized_writeoff: bool = False
+    retailer_shortage_deduction_undisputed_with_clean_pod_or_stale_credit_hold: bool = False
+    debit_card_or_prohibited_state_surcharged_or_chapter11_stay_dunning_sent: bool = False
+    automated_pod_dispute_bundler_and_intraday_credit_release_ready: bool = False
+
+
+def evaluate_b2b_ar_cash_application_deduction_policy(
+    policy_input: B2bArCashApplicationDeductionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_false_shortage_deduction_unearned_discount_and_hold_pool_usd
+        ),
+    )
+    if policy_input.debit_card_or_prohibited_state_surcharged_or_chapter11_stay_dunning_sent:
+        return {
+            "status_code": 451,
+            "decision": "ILLEGAL_CARD_SURCHARGE_OR_BANKRUPTCY_STAY_DUNNING_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unearned_early_pay_discount_taken_past_window_or_unauthorized_writeoff:
+        return {
+            "status_code": 403,
+            "decision": "UNEARNED_EARLY_PAY_DISCOUNT_OR_UNAUTHORIZED_WRITEOFF_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.retailer_shortage_deduction_undisputed_with_clean_pod_or_stale_credit_hold:
+        return {
+            "status_code": 422,
+            "decision": "UNDISPUTED_FALSE_SHORTAGE_DEDUCTION_OR_STALE_CREDIT_HOLD_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.automated_pod_dispute_bundler_and_intraday_credit_release_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "AUTOMATED_POD_DISPUTE_BUNDLER_AND_INTRADAY_CREDIT_RELEASE_CONFIRM",
+            "mandate_token": "b2b_ar_cash_app_dispute_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_AR_CASH_APP_AND_DEDUCTION_AUTHORIZED",
+        "mandate_token": "b2b_ar_cash_app_dispute_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -60698,6 +60774,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_ar_cash_application_deduction_guard = {
+        "authorized_200": evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput()
+        ),
+        "unearned_discount_or_writeoff_403": evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                unearned_early_pay_discount_taken_past_window_or_unauthorized_writeoff=True
+            )
+        ),
+        "false_shortage_or_stale_hold_422": evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                retailer_shortage_deduction_undisputed_with_clean_pod_or_stale_credit_hold=True
+            )
+        ),
+        "illegal_surcharge_or_stay_451": evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                debit_card_or_prohibited_state_surcharged_or_chapter11_stay_dunning_sent=True
+            )
+        ),
+        "pod_dispute_intraday_release_409": evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                automated_pod_dispute_bundler_and_intraday_credit_release_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -61215,6 +61317,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_vmi_consignment_replenishment_guard": b2b_vmi_consignment_replenishment_guard,
         "ecommerce_try_before_you_buy_guard": ecommerce_try_before_you_buy_guard,
         "retail_clienteling_pos_boris_attribution_guard": retail_clienteling_pos_boris_attribution_guard,
+        "b2b_ar_cash_application_deduction_guard": b2b_ar_cash_application_deduction_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -88587,6 +88690,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="omncli-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DUAL_STORE_ENDLESS_AISLE_SPLIT_AND_BORIS_EXCHANGE_CONFIRM · Mandate: omnichannel_clienteling_pos_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 389 (#508 · SVG #832 · Sandbox #282 · Test #1,386) B2B AR Cash Application, Deduction Dispute & Credit Release -->
+      <div class="finops-box" id="b2b-ar-cash-application-deduction-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💵 企业 B2B 应收账款 (AR) 智能认款、商超短装扣款抗辩与动态解封信控 (HighRadius / Billtrust / Versapay / Tesorio) 沙盒</div>
+            <div class="finops-sub">Round 389 (#508 · SVG #832 · Sandbox #282 · Test #1,386) · 拦截第 28 天逾期付款强扣 2/10 早付折扣并自动开立追索借项单 (HTTP 403) + 自动调取承运商签名 POD 反击商超虚假短装扣款与到账 5m 解封信控 (HTTP 422) + 借记卡/禁收州免刷卡附加费与破产 §362 秒级停催锁 (HTTP 451) + 组合数学认款与自动组卷申诉净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2bar-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度商超虚假短装/迟到扣款超期未申诉、买方逾期白嫖 2% 早付折扣与未认款锁单损耗池 ($)
+            <input type="number" id="b2bar-gross-input" value="460000" min="10000" step="5000" oninput="recalcB2bArCashApplicationDeductionSandbox()" />
+          </label>
+          <label>早付现金折扣 (2/10 Net 30) 银行入账起息日硬校验与自动追索借项单 (Chargeback Debit Memo) 门禁
+            <select id="b2bar-disc-select" onchange="recalcB2bArCashApplicationDeductionSandbox()">
+              <option value="pass">严格校验到账日 &lt;=10天窗口，对第 28 天付款私扣 2% 自动拒免并开立追索借项单 (安全)</option>
+              <option value="block_403">买方拖到第 28 天才打款 $98k 却私扣 $2k 早付折扣，认款脚本当尾差直接核销免除 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>商超短装/迟到扣款 (EDI 812) 自动拉取签名 BOL/POD 组卷申诉与电汇到账 5 分钟解封信控门禁
+            <select id="b2bar-pod-select" onchange="recalcB2bArCashApplicationDeductionSandbox()">
+              <option value="pass">60 秒内调取承运商盖章 POD 上传商超门户驳回假短装，且日内到账 5m 释放信用冻结 (合规)</option>
+              <option value="block_422">任由商超乱扣 $15k 短装费因人工找单慢超过 30d 申诉期，或款已到账仍锁死客户急单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>B2B 信用卡附加费 (Surcharge) 借记卡/禁收州合规与破产保护 (§362 Automatic Stay) 静默催收门禁
+            <select id="b2bar-law-select" onchange="recalcB2bArCashApplicationDeductionSandbox()">
+              <option value="pass">自动豁免借记卡 BIN 与禁收州附加费，且客户进入 Chapter 11 破产保护秒级停催 (合规)</option>
+              <option value="block_451">违规向借记卡加收 3% 刷卡附加费，或向已进入破产保护期的客户发自动催收函触犯法院禁令 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>HighRadius 跨门户 POD 自动组卷抗辩 + 子集和组合认款 (Subset-Sum MIP) + 日内实时放单编排
+            <select id="b2bar-opt-select" onchange="recalcB2bArCashApplicationDeductionSandbox()">
+              <option value="enabled" selected>启用 POD 自动组卷申诉 + 早付折扣追索 + 到账 5m 解封信控 (-41% 乱扣款与折扣流失 / HTTP 409)</option>
+              <option value="disabled">传统人工翻单申诉与小额尾差糊涂核销基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度商超乱扣与折扣流失池</div>
+            <div class="finops-kpi-val" id="b2bar-gross-kpi">$460,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">POD 自动申诉与追索净损耗</div>
+            <div class="finops-kpi-val" id="b2bar-net-kpi" style="color:#6ee7b7;">$271,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度追回乱扣款与折扣净省</div>
+            <div class="finops-kpi-val" id="b2bar-savings-kpi" style="color:#38bdf8;">$188,600</div>
+          </div>
+        </div>
+        <div id="b2bar-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 AUTOMATED_POD_DISPUTE_BUNDLER_AND_INTRADAY_CREDIT_RELEASE_CONFIRM · Mandate: b2b_ar_cash_app_dispute_optim_409
         </div>
       </div>
 
@@ -122501,6 +122661,79 @@ function recalcOmnichannelClientelingEndlessAisleSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_OMNICHANNEL_CLIENTELING_AND_POS_AUTHORIZED · Mandate: omnichannel_clienteling_pos_200';
+}}
+
+function recalcB2bArCashApplicationDeductionSandbox() {{
+  const grossInput = document.getElementById('b2bar-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '460000'));
+  const discGate = document.getElementById('b2bar-disc-select').value;
+  const podGate = document.getElementById('b2bar-pod-select').value;
+  const lawGate = document.getElementById('b2bar-law-select').value;
+  const optMode = document.getElementById('b2bar-opt-select').value;
+
+  const grossKpi = document.getElementById('b2bar-gross-kpi');
+  const netKpi = document.getElementById('b2bar-net-kpi');
+  const savingsKpi = document.getElementById('b2bar-savings-kpi');
+  const statusKpi = document.getElementById('b2bar-status-kpi');
+  const banner = document.getElementById('b2bar-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (lawGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ILLEGAL_CARD_SURCHARGE_OR_BANKRUPTCY_STAY_DUNNING_BREACH · Mandate: null';
+    return;
+  }}
+  if (discGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNEARNED_EARLY_PAY_DISCOUNT_OR_UNAUTHORIZED_WRITEOFF_VETO · Mandate: null';
+    return;
+  }}
+  if (podGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNDISPUTED_FALSE_SHORTAGE_DEDUCTION_OR_STALE_CREDIT_HOLD_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 AUTOMATED_POD_DISPUTE_BUNDLER_AND_INTRADAY_CREDIT_RELEASE_CONFIRM · Mandate: b2b_ar_cash_app_dispute_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_AR_CASH_APP_AND_DEDUCTION_AUTHORIZED · Mandate: b2b_ar_cash_app_dispute_200';
 }}
 
 function updateStage1756Sandbox() {{

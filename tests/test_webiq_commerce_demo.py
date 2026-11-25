@@ -35121,6 +35121,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-clienteling-endless-aisle-sandbox", html_zh)
 
+    def test_b2b_ar_cash_application_deduction_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bArCashApplicationDeductionPolicyInput,
+            evaluate_b2b_ar_cash_application_deduction_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                quarterly_false_shortage_deduction_unearned_discount_and_hold_pool_usd=460000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_AR_CASH_APP_AND_DEDUCTION_AUTHORIZED",
+        )
+
+        disc = evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                unearned_early_pay_discount_taken_past_window_or_unauthorized_writeoff=True
+            )
+        )
+        self.assertEqual(disc["status_code"], 403)
+        self.assertEqual(
+            disc["decision"],
+            "UNEARNED_EARLY_PAY_DISCOUNT_OR_UNAUTHORIZED_WRITEOFF_VETO",
+        )
+
+        pod = evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                retailer_shortage_deduction_undisputed_with_clean_pod_or_stale_credit_hold=True
+            )
+        )
+        self.assertEqual(pod["status_code"], 422)
+        self.assertEqual(
+            pod["decision"],
+            "UNDISPUTED_FALSE_SHORTAGE_DEDUCTION_OR_STALE_CREDIT_HOLD_BREACH",
+        )
+
+        law = evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                debit_card_or_prohibited_state_surcharged_or_chapter11_stay_dunning_sent=True
+            )
+        )
+        self.assertEqual(law["status_code"], 451)
+        self.assertEqual(
+            law["decision"],
+            "ILLEGAL_CARD_SURCHARGE_OR_BANKRUPTCY_STAY_DUNNING_BREACH",
+        )
+
+        optim = evaluate_b2b_ar_cash_application_deduction_policy(
+            B2bArCashApplicationDeductionPolicyInput(
+                quarterly_false_shortage_deduction_unearned_discount_and_hold_pool_usd=460000.0,
+                automated_pod_dispute_bundler_and_intraday_credit_release_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 188600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 271400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_ar_cash_application_deduction_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ar-cash-application-deduction-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
