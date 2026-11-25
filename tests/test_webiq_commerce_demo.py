@@ -35322,6 +35322,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-extended-warranty-protection-sandbox", html_zh)
 
+    def test_b2b_freight_audit_payment_gsr_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bFreightAuditPaymentGsrPolicyInput,
+            evaluate_b2b_freight_audit_payment_gsr_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                quarterly_dim_overcharge_unclaimed_gsr_and_duplicate_pro_pool_usd=440000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FREIGHT_AUDIT_AND_GSR_AUTHORIZED",
+        )
+
+        pro = evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                duplicate_tracking_pro_billed_or_uncontracted_fuel_dim_table_applied=True
+            )
+        )
+        self.assertEqual(pro["status_code"], 403)
+        self.assertEqual(
+            pro["decision"],
+            "DUPLICATE_TRACKING_PRO_OR_CONTRACT_FUEL_DIM_TABLE_VETO",
+        )
+
+        dim = evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                laser_dim_exceeds_wms_carton_spec_or_commercial_address_charged_resi=True
+            )
+        )
+        self.assertEqual(dim["status_code"], 422)
+        self.assertEqual(
+            dim["decision"],
+            "PHANTOM_LASER_DIM_REBILL_OR_FALSE_RESIDENTIAL_SURCHARGE_BREACH",
+        )
+
+        gsr = evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                late_delivery_gsr_claim_past_15d_window_or_sku_freight_gl_unallocated=True
+            )
+        )
+        self.assertEqual(gsr["status_code"], 451)
+        self.assertEqual(
+            gsr["decision"],
+            "EXPIRED_15D_GSR_REFUND_WINDOW_OR_UNALLOCATED_SKU_FREIGHT_BREACH",
+        )
+
+        optim = evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                quarterly_dim_overcharge_unclaimed_gsr_and_duplicate_pro_pool_usd=440000.0,
+                line_item_short_pay_dispute_and_automated_pod_gsr_recovery_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 180400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 259600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_freight_audit_payment_gsr_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-freight-audit-payment-gsr-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

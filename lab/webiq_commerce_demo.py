@@ -44893,6 +44893,82 @@ def evaluate_ecommerce_extended_warranty_protection_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bFreightAuditPaymentGsrPolicyInput:
+    quarterly_dim_overcharge_unclaimed_gsr_and_duplicate_pro_pool_usd: float = 440000.0
+    duplicate_tracking_pro_billed_or_uncontracted_fuel_dim_table_applied: bool = False
+    laser_dim_exceeds_wms_carton_spec_or_commercial_address_charged_resi: bool = False
+    late_delivery_gsr_claim_past_15d_window_or_sku_freight_gl_unallocated: bool = False
+    line_item_short_pay_dispute_and_automated_pod_gsr_recovery_ready: bool = False
+
+
+def evaluate_b2b_freight_audit_payment_gsr_policy(
+    policy_input: B2bFreightAuditPaymentGsrPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_dim_overcharge_unclaimed_gsr_and_duplicate_pro_pool_usd
+        ),
+    )
+    if policy_input.late_delivery_gsr_claim_past_15d_window_or_sku_freight_gl_unallocated:
+        return {
+            "status_code": 451,
+            "decision": "EXPIRED_15D_GSR_REFUND_WINDOW_OR_UNALLOCATED_SKU_FREIGHT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.duplicate_tracking_pro_billed_or_uncontracted_fuel_dim_table_applied:
+        return {
+            "status_code": 403,
+            "decision": "DUPLICATE_TRACKING_PRO_OR_CONTRACT_FUEL_DIM_TABLE_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.laser_dim_exceeds_wms_carton_spec_or_commercial_address_charged_resi:
+        return {
+            "status_code": 422,
+            "decision": "PHANTOM_LASER_DIM_REBILL_OR_FALSE_RESIDENTIAL_SURCHARGE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.line_item_short_pay_dispute_and_automated_pod_gsr_recovery_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LINE_ITEM_SHORT_PAY_DISPUTE_AND_AUTOMATED_GSR_RECOVERY_CONFIRM",
+            "mandate_token": "b2b_freight_audit_gsr_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FREIGHT_AUDIT_AND_GSR_AUTHORIZED",
+        "mandate_token": "b2b_freight_audit_gsr_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -61004,6 +61080,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_freight_audit_payment_gsr_guard = {
+        "authorized_200": evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput()
+        ),
+        "duplicate_pro_or_fuel_table_403": evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                duplicate_tracking_pro_billed_or_uncontracted_fuel_dim_table_applied=True
+            )
+        ),
+        "phantom_dim_or_resi_fee_422": evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                laser_dim_exceeds_wms_carton_spec_or_commercial_address_charged_resi=True
+            )
+        ),
+        "expired_gsr_or_unallocated_gl_451": evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                late_delivery_gsr_claim_past_15d_window_or_sku_freight_gl_unallocated=True
+            )
+        ),
+        "short_pay_auto_gsr_409": evaluate_b2b_freight_audit_payment_gsr_policy(
+            B2bFreightAuditPaymentGsrPolicyInput(
+                line_item_short_pay_dispute_and_automated_pod_gsr_recovery_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -61524,6 +61626,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_ar_cash_application_deduction_guard": b2b_ar_cash_application_deduction_guard,
         "ota_dynamic_packaging_bedbank_parity_guard": ota_dynamic_packaging_bedbank_parity_guard,
         "ecommerce_extended_warranty_protection_guard": ecommerce_extended_warranty_protection_guard,
+        "b2b_freight_audit_payment_gsr_guard": b2b_freight_audit_payment_gsr_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89067,6 +89170,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="extwar-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 REPLACEMENT_AS_A_PURCHASE_LOOP_AND_SLIDE_CART_ATTACH_CONFIRM · Mandate: extended_warranty_loop_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 392 (🏆 835th SVG & 285th Sandbox Dual Milestone! · #511 · Test #1,389) Parcel & B2B Freight Audit & Payment (FAP) -->
+      <div class="finops-box" id="b2b-freight-audit-payment-gsr-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 零售包裹与企业 B2B 运费审计及结算 (FAP)、激光 DIM 材积重抗辩与延误退费 GSR (Intelligent Audit / Loop AI / Trax / Cass) 沙盒（🏆 第 835 张 SVG 与第 285 个沙盒双里程碑！）</div>
+            <div class="finops-sub">Round 392 (🏆 SVG #835 &amp; Sandbox #285 Milestone · #511 · Test #1,389) · 运单号 (PRO/1Z) 180 天跨期防重扣与合同专属 DIM 除数/燃油表核验锁 (HTTP 403) + WMS 标准纸箱主数据反击激光 DIM 乱加费与商业地址误收住宅费抗辩 (HTTP 422) + POD+24h 自动申报次日达延误 100% 退费 (GSR &lt;=15d) 与 SKU 级运费分摊锁 (HTTP 451) + 差额短付抗辩净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="fapgsr-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度分拣线激光误判 DIM 材积重补款、商业地址误收住宅费、次日达延误未申诉 GSR 与重复运单损耗池 ($)
+            <input type="number" id="fapgsr-gross-input" value="440000" min="10000" step="5000" oninput="recalcB2bFreightAuditPaymentGsrSandbox()" />
+          </label>
+          <label>运单号 (PRO / 1Z Tracking) 180 天历史去重与大客户合同专属体积重除数 (166) / 燃油表门禁
+            <select id="fapgsr-pro-select" onchange="recalcB2bFreightAuditPaymentGsrSandbox()">
+              <option value="pass">逐行去重 180 天已付运单号，且强制按合同 DIM 除数 166 与专属燃油表重算 (安全)</option>
+              <option value="block_403">同一运单号在跨周调整账单中被重复扣款，或承运商按公网 139 除数与高燃油表计费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>WMS 标准刚性纸箱 CAD 反击激光 DIM 材积重误判与 USPS RDI 商业仓库地址验真门禁
+            <select id="fapgsr-dim-select" onchange="recalcB2bFreightAuditPaymentGsrSandbox()">
+              <option value="pass">凭 WMS 标准箱尺寸驳回因胶带翘起多收的 $14 体积重，并剔除商业仓假住宅附加费 (合规)</option>
+              <option value="block_422">任由承运商激光误扫翘起胶带将 7 磅箱改判 22 磅扣款，或对商业仓库照交 $19.50 住宅费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>加急件延误 POD+24h 自动申报 100% 退费 (GSR &lt;=15d 窗口) 与真实运费回写单品 SKU 总账门禁
+            <select id="fapgsr-gsr-select" onchange="recalcB2bFreightAuditPaymentGsrSandbox()">
+              <option value="pass">迟到满 60 秒即在签收 24h 内自动提交 GSR 全额退费，且运费精确分摊至单品 SKU (合规)</option>
+              <option value="block_451">次日达延误超过 15 天未申诉导致 100% 退费权作废，或运费糊涂入总账掩盖远区亏本重货 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>EDI 210 逐行差额短付 (Short-Pay Approved Base) + 自动上传纸箱证明抗辩 + GSR 秒退编排
+            <select id="fapgsr-opt-select" onchange="recalcB2bFreightAuditPaymentGsrSandbox()">
+              <option value="enabled" selected>启用差额短付抗辩 + WMS 标准箱反击 DIM + POD+24h 自动 GSR (-41% 运费多收与延误损耗 / HTTP 409)</option>
+              <option value="disabled">传统承运商账单信用卡/ACH 全额自动代扣基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度运费错收与未索赔池</div>
+            <div class="finops-kpi-val" id="fapgsr-gross-kpi">$440,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">逐行短付抗辩与 GSR 净成本</div>
+            <div class="finops-kpi-val" id="fapgsr-net-kpi" style="color:#6ee7b7;">$259,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度追回错收费与延误退费</div>
+            <div class="finops-kpi-val" id="fapgsr-savings-kpi" style="color:#38bdf8;">$180,400</div>
+          </div>
+        </div>
+        <div id="fapgsr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 LINE_ITEM_SHORT_PAY_DISPUTE_AND_AUTOMATED_GSR_RECOVERY_CONFIRM · Mandate: b2b_freight_audit_gsr_optim_409
         </div>
       </div>
 
@@ -123200,6 +123360,79 @@ function recalcEcommerceExtendedWarrantyProtectionSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_EXTENDED_WARRANTY_AND_PROTECTION_AUTHORIZED · Mandate: extended_warranty_loop_200';
+}}
+
+function recalcB2bFreightAuditPaymentGsrSandbox() {{
+  const grossInput = document.getElementById('fapgsr-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '440000'));
+  const proGate = document.getElementById('fapgsr-pro-select').value;
+  const dimGate = document.getElementById('fapgsr-dim-select').value;
+  const gsrGate = document.getElementById('fapgsr-gsr-select').value;
+  const optMode = document.getElementById('fapgsr-opt-select').value;
+
+  const grossKpi = document.getElementById('fapgsr-gross-kpi');
+  const netKpi = document.getElementById('fapgsr-net-kpi');
+  const savingsKpi = document.getElementById('fapgsr-savings-kpi');
+  const statusKpi = document.getElementById('fapgsr-status-kpi');
+  const banner = document.getElementById('fapgsr-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (gsrGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EXPIRED_15D_GSR_REFUND_WINDOW_OR_UNALLOCATED_SKU_FREIGHT_BREACH · Mandate: null';
+    return;
+  }}
+  if (proGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DUPLICATE_TRACKING_PRO_OR_CONTRACT_FUEL_DIM_TABLE_VETO · Mandate: null';
+    return;
+  }}
+  if (dimGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PHANTOM_LASER_DIM_REBILL_OR_FALSE_RESIDENTIAL_SURCHARGE_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 LINE_ITEM_SHORT_PAY_DISPUTE_AND_AUTOMATED_GSR_RECOVERY_CONFIRM · Mandate: b2b_freight_audit_gsr_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FREIGHT_AUDIT_AND_GSR_AUTHORIZED · Mandate: b2b_freight_audit_gsr_200';
 }}
 
 function updateStage1756Sandbox() {{
