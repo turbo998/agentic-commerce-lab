@@ -34987,6 +34987,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-vmi-consignment-replenishment-sandbox", html_zh)
 
+    def test_ecommerce_try_before_you_buy_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceTryBeforeYouBuyPolicyInput,
+            evaluate_ecommerce_try_before_you_buy_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_try_before_you_buy_policy(
+            EcommerceTryBeforeYouBuyPolicyInput(
+                quarterly_tbyb_auth_expiry_default_and_empty_box_freight_pool_usd=410000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_TBYB_AND_CURATED_BOX_AUTHORIZED",
+        )
+
+        auth = evaluate_ecommerce_try_before_you_buy_policy(
+            EcommerceTryBeforeYouBuyPolicyInput(
+                prepaid_burner_bin_accepted_or_7d_auth_hold_lapsed_without_reauth=True
+            )
+        )
+        self.assertEqual(auth["status_code"], 403)
+        self.assertEqual(
+            auth["decision"],
+            "BURNER_PREPAID_BIN_OR_EXPIRED_TBYB_AUTH_HOLD_VETO",
+        )
+
+        cap = evaluate_ecommerce_try_before_you_buy_policy(
+            EcommerceTryBeforeYouBuyPolicyInput(
+                tbyb_box_exceeds_5_items_or_keep_all_discount_kept_on_partial_return=True
+            )
+        )
+        self.assertEqual(cap["status_code"], 422)
+        self.assertEqual(
+            cap["decision"],
+            "TBYB_BOX_EXPOSURE_CAP_OR_KEEP_ALL_DISCOUNT_BREACH",
+        )
+
+        pod = evaluate_ecommerce_try_before_you_buy_policy(
+            EcommerceTryBeforeYouBuyPolicyInput(
+                trial_clock_started_before_pod_or_charged_while_return_in_transit=True
+            )
+        )
+        self.assertEqual(pod["status_code"], 451)
+        self.assertEqual(
+            pod["decision"],
+            "PRE_POD_TRIAL_CLOCK_START_OR_IN_TRANSIT_RETURN_CHARGED_BREACH",
+        )
+
+        optim = evaluate_ecommerce_try_before_you_buy_policy(
+            EcommerceTryBeforeYouBuyPolicyInput(
+                quarterly_tbyb_auth_expiry_default_and_empty_box_freight_pool_usd=410000.0,
+                rolling_auth_refresh_pod_timer_and_keep_all_tiered_discount_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 176300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 233700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_try_before_you_buy_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-try-before-you-buy-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
