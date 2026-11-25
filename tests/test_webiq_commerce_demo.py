@@ -35910,6 +35910,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("e2e-agentic-commerce-master-blueprint-sandbox", html_zh)
 
+    def test_digital_gift_card_corporate_incentive_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            DigitalGiftCardCorporateIncentivePolicyInput,
+            evaluate_digital_gift_card_corporate_incentive_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_digital_gift_card_corporate_incentive_policy(
+            DigitalGiftCardCorporateIncentivePolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "digital_gift_card_incentive_200")
+
+        laund = evaluate_digital_gift_card_corporate_incentive_policy(
+            DigitalGiftCardCorporateIncentivePolicyInput(
+                gift_card_bought_with_gift_card_or_promo_stacked_or_unsettled_b2b_ach=True
+            )
+        )
+        self.assertEqual(laund["status_code"], 403)
+        self.assertEqual(
+            laund["decision"],
+            "GIFT_CARD_LAUNDERING_PROMO_STACK_OR_UNSETTLED_B2B_BULK_VETO",
+        )
+
+        pin = evaluate_digital_gift_card_corporate_incentive_policy(
+            DigitalGiftCardCorporateIncentivePolicyInput(
+                balance_check_missing_8digit_pin_or_high_risk_card_delivered_instantly=True
+            )
+        )
+        self.assertEqual(pin["status_code"], 422)
+        self.assertEqual(
+            pin["decision"],
+            "GIFT_CARD_ENUMERATION_DRAIN_OR_INSTANT_CASHOUT_BREACH",
+        )
+
+        aml = evaluate_digital_gift_card_corporate_incentive_policy(
+            DigitalGiftCardCorporateIncentivePolicyInput(
+                daily_closed_loop_load_exceeds_2000_fincen_cap_or_paid_expiry_under_5yr=True
+            )
+        )
+        self.assertEqual(aml["status_code"], 451)
+        self.assertEqual(
+            aml["decision"],
+            "FINCEN_2000_PREPAID_AML_CAP_OR_CARD_ACT_EXPIRY_BREACH",
+        )
+
+        optim = evaluate_digital_gift_card_corporate_incentive_policy(
+            DigitalGiftCardCorporateIncentivePolicyInput(
+                quarterly_card_draining_stolen_card_cashout_and_b2b_bounce_pool_usd=410000.0,
+                account_bound_claim_settled_wire_activation_and_split_ledger_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 176300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 233700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("digital_gift_card_corporate_incentive_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("digital-gift-card-corporate-incentive-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
